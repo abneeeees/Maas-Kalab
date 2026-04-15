@@ -14,6 +14,13 @@ export function Footer() {
             >
               abneeeees
             </a>
+            {" & "}
+            <a
+              href="https://v8v88v8v88.com"
+              className="underline decoration-[var(--footer-accent-border)] underline-offset-4 transition hover:text-[var(--footer-link-hover)] hover:decoration-[var(--red-primary)]"
+            >
+              V8
+            </a>
           </p>
         </div>
 

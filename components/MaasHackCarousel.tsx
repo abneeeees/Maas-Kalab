@@ -1,15 +1,7 @@
 "use client";
 
-import type { EmblaCarouselType, EmblaEventType } from "embla-carousel";
-import useEmblaCarousel from "embla-carousel-react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-
-const TWEEN_FACTOR_BASE = 0.42;
-
-function clamp(n: number, min: number, max: number) {
-  return Math.min(Math.max(n, min), max);
-}
 
 export type MaasHackSlide = {
   imgSrc: string;
@@ -23,184 +15,160 @@ type Props = {
   slides: MaasHackSlide[];
 };
 
+const VISIBLE = 3;
+const CYCLE_MS = 4500;
+const ANIM_MS = 600;
+
 export function MaasHackCarousel({ slides }: Props) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    align: "center",
-    skipSnaps: false,
-  });
-  const [selected, setSelected] = useState(0);
+  const n = slides.length;
+  const [front, setFront] = useState(0);
+  const [leaving, setLeaving] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const pointerRef = useRef<{ x: number; y: number; t: number } | null>(null);
 
-  const tweenFactor = useRef(0);
-  const tweenNodes = useRef<HTMLElement[]>([]);
+  const advance = useCallback(() => {
+    if (leaving) return;
+    setLeaving(true);
+    setTimeout(() => {
+      setFront((p) => (p + 1) % n);
+      setLeaving(false);
+    }, ANIM_MS);
+  }, [leaving, n]);
 
-  const setTweenNodes = useCallback((api: EmblaCarouselType) => {
-    tweenNodes.current = api.slideNodes().map((node) => {
-      return node.querySelector(".embla__slide__scale") as HTMLElement;
-    });
-  }, []);
-
-  const setTweenFactor = useCallback((api: EmblaCarouselType) => {
-    tweenFactor.current = TWEEN_FACTOR_BASE * api.scrollSnapList().length;
-  }, []);
-
-  const tweenScale = useCallback(
-    (api: EmblaCarouselType, evt?: EmblaEventType) => {
-      const engine = api.internalEngine();
-      const scrollProgress = api.scrollProgress();
-      const inView = api.slidesInView();
-      const isScroll = evt === "scroll";
-
-      api.scrollSnapList().forEach((scrollSnap, snapIdx) => {
-        let diff = scrollSnap - scrollProgress;
-        const slidesInSnap = engine.slideRegistry[snapIdx];
-
-        slidesInSnap.forEach((slideIdx) => {
-          if (isScroll && !inView.includes(slideIdx)) return;
-
-          if (engine.options.loop) {
-            engine.slideLooper.loopPoints.forEach((lp) => {
-              const target = lp.target();
-              if (slideIdx === lp.index && target !== 0) {
-                const sign = Math.sign(target);
-                if (sign === -1) diff = scrollSnap - (1 + scrollProgress);
-                if (sign === 1) diff = scrollSnap + (1 - scrollProgress);
-              }
-            });
-          }
-
-          const tweenValue = 1 - Math.abs(diff * tweenFactor.current);
-          const scale = clamp(tweenValue, 0, 1);
-          const node = tweenNodes.current[slideIdx];
-          if (node) node.style.transform = `scale(${scale})`;
-        });
-      });
-    },
-    [],
-  );
+  const resetTimer = useCallback(() => {
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(advance, CYCLE_MS);
+  }, [advance]);
 
   useEffect(() => {
-    if (!emblaApi) return;
+    timerRef.current = setInterval(advance, CYCLE_MS);
+    return () => clearInterval(timerRef.current);
+  }, [advance]);
 
-    setTweenNodes(emblaApi);
-    setTweenFactor(emblaApi);
-    tweenScale(emblaApi);
+  const handleTap = () => {
+    advance();
+    resetTimer();
+  };
 
-    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
-    onSelect();
+  const jumpTo = (i: number) => {
+    if (i === front || leaving) return;
+    setFront(i);
+    resetTimer();
+  };
 
-    emblaApi
-      .on("reInit", setTweenNodes)
-      .on("reInit", setTweenFactor)
-      .on("reInit", tweenScale)
-      .on("scroll", tweenScale)
-      .on("slideFocus", tweenScale)
-      .on("select", onSelect);
+  const onPointerDown = (e: React.PointerEvent) => {
+    pointerRef.current = { x: e.clientX, y: e.clientY, t: Date.now() };
+  };
 
-    return () => {
-      emblaApi
-        .off("reInit", setTweenNodes)
-        .off("reInit", setTweenFactor)
-        .off("reInit", tweenScale)
-        .off("scroll", tweenScale)
-        .off("slideFocus", tweenScale)
-        .off("select", onSelect);
-    };
-  }, [emblaApi, setTweenNodes, setTweenFactor, tweenScale]);
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (!pointerRef.current) return;
+    const dx = e.clientX - pointerRef.current.x;
+    const dy = Math.abs(e.clientY - pointerRef.current.y);
+    const dt = Date.now() - pointerRef.current.t;
+    pointerRef.current = null;
 
-  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-  const scrollTo = useCallback(
-    (i: number) => emblaApi?.scrollTo(i),
-    [emblaApi],
-  );
+    if (Math.abs(dx) > 40 && Math.abs(dx) > dy) {
+      advance();
+      resetTimer();
+    } else if (dt < 300 && Math.abs(dx) < 10) {
+      handleTap();
+    }
+  };
+
+  const activeDot = leaving ? (front + 1) % n : front;
 
   return (
-    <div className="relative">
-      <div ref={emblaRef} className="overflow-hidden">
-        <div className="-ml-4 flex sm:-ml-6">
-          {slides.map((slide) => (
+    <div className="relative mx-auto w-full max-w-2xl">
+      <div
+        className="relative mx-auto"
+        style={{ aspectRatio: "16 / 10" }}
+      >
+        {slides.map((slide, i) => {
+          const isFront = i === front;
+          const rawPos = ((i - front + n) % n);
+          const stackPos = leaving
+            ? isFront ? -1 : ((i - front - 1 + n) % n)
+            : rawPos;
+
+          if (stackPos > VISIBLE && stackPos !== -1) return null;
+
+          let transform: string;
+          let opacity: number;
+          let zIndex: number;
+
+          if (stackPos === -1) {
+            transform = "translateX(-108%) rotate(-8deg) scale(0.88)";
+            opacity = 0;
+            zIndex = n + 1;
+          } else {
+            const yOff = stackPos * 14;
+            const scl = 1 - stackPos * 0.04;
+            transform = `scale(${scl}) translateY(${yOff}px)`;
+            opacity = stackPos >= VISIBLE ? 0 : 1 - stackPos * 0.18;
+            zIndex = n - stackPos;
+          }
+
+          return (
             <div
               key={slide.href}
-              className="min-w-0 shrink-0 grow-0 basis-[85%] pl-4 sm:basis-[60%] sm:pl-6"
+              className="masshack-deck-card absolute inset-0"
+              style={{ transform, opacity, zIndex }}
+              onPointerDown={isFront ? onPointerDown : undefined}
+              onPointerUp={isFront ? onPointerUp : undefined}
             >
-              <div className="embla__slide__scale">
-                <Link
-                  href={slide.href}
+              <div className="masshack-frame relative h-full w-full overflow-hidden">
+                <img
+                  src={slide.imgSrc}
+                  alt={slide.title}
                   draggable={false}
-                  className="group relative block overflow-hidden rounded-2xl"
-                >
-                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--carousel-image-bg)]">
-                    <img
-                      src={slide.imgSrc}
-                      alt={slide.title}
-                      draggable={false}
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
-                    />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-4 p-5 sm:p-6">
-                      <div className="min-w-0">
-                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.25em] text-white/60">
-                          Flagship
-                        </p>
-                        <h3 className="mt-0.5 text-xl font-semibold tracking-tight text-white sm:text-2xl">
-                          {slide.title}
-                        </h3>
-                        <p className="mt-1 text-xs text-white/70 sm:text-sm">
-                          {slide.description}
-                        </p>
-                      </div>
-                      <div className="flex shrink-0 flex-col items-end gap-1.5">
-                        <span className="rounded-full bg-white/15 px-3 py-0.5 text-[0.65rem] font-medium text-white/80 backdrop-blur-sm">
-                          {slide.date}
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-white/90 transition group-hover:gap-2 sm:text-sm">
-                          View recap
-                          <span aria-hidden>→</span>
-                        </span>
-                      </div>
-                    </div>
+                  className="h-full w-full object-cover"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-4 p-5 sm:p-6">
+                  <div className="min-w-0">
+                    <p className="text-[0.6rem] font-bold uppercase tracking-[0.25em] text-white/60">
+                      Flagship
+                    </p>
+                    <h3 className="mt-0.5 text-xl font-semibold tracking-tight text-white sm:text-2xl">
+                      {slide.title}
+                    </h3>
+                    <p className="mt-1 text-xs text-white/70 sm:text-sm">
+                      {slide.description}
+                    </p>
                   </div>
-                </Link>
+                  <div className="flex shrink-0 flex-col items-end gap-1.5">
+                    <span className="rounded-full bg-white/15 px-3 py-0.5 text-[0.65rem] font-medium text-white/80 backdrop-blur-sm">
+                      {slide.date}
+                    </span>
+                    <Link
+                      href={slide.href}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-white/90 transition-[gap] hover:gap-2 sm:text-sm"
+                    >
+                      View recap
+                      <span aria-hidden>→</span>
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
 
-      <div className="mt-6 flex items-center justify-center gap-3">
-        <button
-          type="button"
-          onClick={scrollPrev}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--carousel-nav-border)] bg-[var(--carousel-nav-bg)] text-[var(--carousel-nav-text)] shadow-sm transition hover:border-[var(--carousel-nav-hover-border)] hover:bg-[var(--carousel-nav-hover-bg)]"
-          aria-label="Previous"
-        >
-          <span className="text-lg leading-none">‹</span>
-        </button>
-        <div className="flex gap-2">
-          {slides.map((s, i) => (
-            <button
-              key={s.href}
-              type="button"
-              onClick={() => scrollTo(i)}
-              className={`h-2 rounded-full transition-all ${
-                i === selected
-                  ? "w-8 bg-[var(--red-primary)]"
-                  : "w-2 bg-[var(--carousel-dot-inactive)] hover:bg-[var(--carousel-dot-inactive-hover)]"
-              }`}
-              aria-label={`Go to ${s.title}`}
-              aria-current={i === selected}
-            />
-          ))}
-        </div>
-        <button
-          type="button"
-          onClick={scrollNext}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--carousel-nav-border)] bg-[var(--carousel-nav-bg)] text-[var(--carousel-nav-text)] shadow-sm transition hover:border-[var(--carousel-nav-hover-border)] hover:bg-[var(--carousel-nav-hover-bg)]"
-          aria-label="Next"
-        >
-          <span className="text-lg leading-none">›</span>
-        </button>
+      <div className="mt-6 flex justify-center gap-2">
+        {slides.map((s, i) => (
+          <button
+            key={s.href}
+            type="button"
+            onClick={() => jumpTo(i)}
+            className={`h-2 rounded-full transition-all duration-500 ${
+              i === activeDot
+                ? "w-7 bg-[var(--red-primary)]"
+                : "w-2 bg-[var(--carousel-dot-inactive)] hover:bg-[var(--carousel-dot-inactive-hover)]"
+            }`}
+            aria-label={`Go to ${s.title}`}
+          />
+        ))}
       </div>
     </div>
   );

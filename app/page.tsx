@@ -2,6 +2,7 @@ import { Footer } from "@/components/Footer";
 import { HeroSection } from "@/components/HeroSection";
 import { InfoCard } from "@/components/InfoCard";
 import { MaasHackCarousel } from "@/components/MaasHackCarousel";
+import { MiniMaasupGallery } from "@/components/MiniMaasupGallery";
 import { Navbar } from "@/components/Navbar";
 import { ResourceCard } from "@/components/ResourceCard";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/ScrollReveal";
@@ -188,18 +189,7 @@ export default function Home() {
                 description="Other than Maas Hacks, Maas Kalab hosts some mini meetups too!"
               />
             </ScrollReveal>
-            <StaggerContainer className="grid gap-5 md:grid-cols-3">
-              {miniMeetups.map((meetup) => (
-                <StaggerItem key={meetup.title}>
-                  <InfoCard
-                    imgSrc={meetup.imgSrc}
-                    title={meetup.title}
-                    description={meetup.description}
-                    date={meetup.date}
-                  />
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
+            <MiniMaasupGallery meetups={miniMeetups} />
           </div>
         </section>
 

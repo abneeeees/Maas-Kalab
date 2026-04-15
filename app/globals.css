@@ -202,6 +202,106 @@ a {
   animation: marquee 30s linear infinite;
 }
 
-.embla__slide__scale {
-  transition: transform 0.16s ease-out;
+.masshack-deck-card {
+  cursor: pointer;
+  will-change: transform, opacity;
+  transition:
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s ease;
+}
+
+.masshack-frame {
+  border-radius: 1.1rem;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+html.dark .masshack-frame {
+  border-color: rgba(245, 158, 11, 0.18);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+}
+
+.maasup-fan {
+  --card-gap: -1.5rem;
+}
+
+@media (min-width: 640px) {
+  .maasup-fan {
+    --card-gap: -2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .maasup-fan {
+    --card-gap: -2.5rem;
+  }
+}
+
+.maasup-card {
+  position: relative;
+  flex-shrink: 0;
+  margin-left: var(--card-gap);
+  cursor: pointer;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              z-index 0s;
+}
+
+.maasup-card:first-child {
+  margin-left: 0;
+}
+
+.maasup-card:hover {
+  transform: rotate(0deg) translateY(-14px) scale(1.08) !important;
+  z-index: 20 !important;
+}
+
+.maasup-frame {
+  position: relative;
+  width: 10rem;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.5s ease, border-color 0.5s ease;
+}
+
+@media (min-width: 640px) {
+  .maasup-frame {
+    width: 13rem;
+    border-radius: 1.15rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .maasup-frame {
+    width: 15rem;
+    border-radius: 1.25rem;
+  }
+}
+
+.maasup-card:hover .maasup-frame {
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
+  border-color: rgba(255, 255, 255, 0.65);
+}
+
+.maasup-card:hover .maasup-frame img {
+  transform: scale(1.06);
+}
+
+html.dark .maasup-frame {
+  border-color: rgba(245, 158, 11, 0.18);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+
+html.dark .maasup-card:hover .maasup-frame {
+  border-color: rgba(245, 158, 11, 0.35);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.5);
+}
+
+.maasup-card-mobile {
+  cursor: pointer;
+  will-change: transform, opacity;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.6s ease;
 }
