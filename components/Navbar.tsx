@@ -26,7 +26,7 @@ export function Navbar() {
       <nav
         className={`flex items-center gap-0.5 rounded-full px-1.5 py-1 transition-all duration-500 ${
           scrolled
-            ? "border border-[var(--nav-border)] bg-[var(--background)]/60 shadow-[0_4px_24px_var(--nav-shadow)] backdrop-blur-2xl"
+            ? "border border-[var(--nav-border)] bg-[var(--nav-bg-scrolled)] shadow-[0_2px_16px_var(--nav-shadow)] backdrop-blur-xl backdrop-saturate-[1.8]"
             : "border border-transparent bg-transparent shadow-none backdrop-blur-none"
         }`}
       >

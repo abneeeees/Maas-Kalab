@@ -17,10 +17,11 @@
   --shadow-card-lg: rgba(127, 29, 29, 0.06);
   --nav-from: rgba(255, 255, 255, 0.95);
   --nav-to: rgba(254, 242, 242, 0.4);
-  --nav-border: rgba(254, 202, 202, 0.7);
-  --nav-shadow: rgba(185, 28, 28, 0.12);
-  --hero-pill-bg: rgba(254, 242, 242, 0.72);
-  --hero-pill-border: rgba(254, 202, 202, 0.6);
+  --nav-bg-scrolled: rgba(253, 242, 233, 0.82);
+  --nav-border: rgba(127, 29, 29, 0.25);
+  --nav-shadow: transparent;
+  --hero-pill-bg: rgba(253, 242, 233, 0.7);
+  --hero-pill-border: rgba(127, 29, 29, 0.18);
   --btn-secondary-bg: #ffffff;
   --btn-secondary-border: #fca5a5;
   --btn-secondary-text: #7f1d1d;
@@ -89,8 +90,9 @@ html.dark {
   --shadow-card-lg: rgba(0, 0, 0, 0.45);
   --nav-from: rgba(22, 15, 18, 0.92);
   --nav-to: rgba(35, 22, 10, 0.48);
-  --nav-border: rgba(245, 158, 11, 0.22);
-  --nav-shadow: rgba(245, 158, 11, 0.14);
+  --nav-bg-scrolled: rgba(12, 8, 9, 0.78);
+  --nav-border: rgba(245, 158, 11, 0.3);
+  --nav-shadow: transparent;
   --hero-pill-bg: rgba(45, 28, 8, 0.55);
   --hero-pill-border: rgba(245, 158, 11, 0.35);
   --btn-secondary-bg: rgba(22, 15, 18, 0.88);

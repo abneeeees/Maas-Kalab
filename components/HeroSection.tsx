@@ -80,7 +80,7 @@ export function HeroSection({ highlights }: { highlights: HeroHighlight[] }) {
           variants={fadeUp}
           className="mx-auto mb-6 w-fit rounded-full border border-[var(--hero-pill-border)] bg-[var(--hero-pill-bg)] px-5 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-[var(--red-primary)] backdrop-blur"
         >
-          A Kalab For MAAS Khors
+          A Club For Maas Khors
         </motion.p>
 
         <div className="mx-auto max-w-5xl space-y-0">
