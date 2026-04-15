@@ -11,7 +11,7 @@ import { FoodMarquee } from "@/components/TrilingualStrip";
 const members = [
   { name: "Mallu", description: "President of Maas Kalab" },
   { name: "Sejal", description: "Maas Enthusiast" },
-  { name: "exhidna tea", description: "Vice President of Maas Kalab" },
+  { name: "echidna tea", description: "Vice President of Maas Kalab" },
   { name: "abneeeees", description: "Food Inspector of Maas Kalab" },
   { name: "V8", description: "Event Coordinator of Maas Kalab" },
   { name: "LilSuperUser", description: "Maas Enthusiast" },

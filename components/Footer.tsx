@@ -11,7 +11,7 @@ export function Footer() {
                 Maas Kalab
               </p>
               <p className="mt-2 text-sm leading-relaxed text-[var(--footer-muted)]">
-                Made with ❤️ for Maas by{" "}
+                Powered with 🍗 by{" "}
                 <a
                   href="https://abneeeees.github.io/"
                   className="font-medium text-[var(--footer-link)] underline decoration-[var(--footer-accent-border)] underline-offset-4 transition-colors hover:text-[var(--footer-link-hover)] hover:decoration-[var(--footer-accent)]"

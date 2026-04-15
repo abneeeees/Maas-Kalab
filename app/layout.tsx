@@ -16,6 +16,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Maas Kalab",
   description: "A club for non vegeterians",
+  icons: {
+    icon: "/decor/fried-chicken.png",
+    apple: "/decor/fried-chicken.png",
+  },
 };
 
 const themeScript = `(function(){try{var t=localStorage.getItem('mk-theme');if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}})()`;

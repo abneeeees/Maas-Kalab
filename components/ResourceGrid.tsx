@@ -50,10 +50,13 @@ export function ResourceGrid({ resources }: { resources: Resource[] }) {
       <div
         ref={scrollRef}
         onScroll={checkScroll}
-        className="resource-scroll flex gap-5 overflow-x-auto pb-2"
+        className="resource-scroll flex gap-4 overflow-x-auto pb-2 sm:gap-5"
       >
         {resources.map((r) => (
-          <div key={r.title} className="w-[calc(50%-10px)] shrink-0 sm:w-[calc(33.333%-14px)]">
+          <div
+            key={r.title}
+            className="w-[min(86%,20rem)] shrink-0 sm:w-[calc(33.333%-14px)]"
+          >
             <ResourceCard
               imgSrc={r.imgSrc}
               title={r.title}
