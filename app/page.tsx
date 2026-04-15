@@ -14,12 +14,42 @@ const members = [
   { name: "echidna tea", description: "Vice President of Maas Kalab" },
   { name: "abneeeees", description: "Food Inspector of Maas Kalab" },
   { name: "V8", description: "Event Coordinator of Maas Kalab" },
-  { name: "LilSuperUser", description: "Maas Enthusiast" },
+  { name: "LilSuperUser", description: "Maas Explorer" },
   { name: "Karan", description: "Maas Enthusiast" },
   { name: "K2", description: "Maas Man" },
 ];
 
 const resources = [
+  {
+    imgSrc: "resources/lucknow_galawati_kebab.png",
+    title: "Lucknow Galawati Kebab",
+    description: "placeholder",
+    addr: "https://share.google/w4jvHXaaqOXeuy1iP",
+  },
+  {
+    imgSrc: "resources/talib_kabab_corner.png",
+    title: "Talib Kebab Corner",
+    description: "placeholder",
+    addr: "https://share.google/TZayhAx1eB3KFdZAE",
+  },
+  {
+    imgSrc: "resources/javed_famous_nihari.png",
+    title: "Javed Famous Nahari",
+    description: "placeholder",
+    addr: "https://share.google/B78PTdeWJRClO3G5E",
+  },
+  {
+    imgSrc: "resources/sab_ke_khatir.png",
+    title: "Sab Ke Khatir",
+    description: "placeholder",
+    addr: "https://share.google/MNwV8pWgVkaoWnwB8",
+  },
+  {
+    imgSrc: "resources/noora_nihari.png",
+    title: "Noora Nihari",
+    description: "placeholder",
+    addr: "https://share.google/qSKy2SVXo95wgEKVm",
+  },
   {
     imgSrc: "resources/gulrez_kabab_corner.png",
     title: "Gulrez Kabab Corner",
@@ -28,7 +58,7 @@ const resources = [
   },
   {
     imgSrc: "resources/hafiz_ji_parathe_wale.png",
-    title: "HAFIZ JI PARATHE WALE",
+    title: "Hafiz JI Parathe Wale",
     description: "placeholder",
     addr: "https://share.google/0aaDdAPEPtuRPNXY3",
   },
@@ -45,16 +75,10 @@ const resources = [
     addr: "https://share.google/zb9N2rAmisskdVEko",
   },
   {
-    imgSrc: "resources/talib_kabab_corner.png",
-    title: "TALIB KABAB CORNER",
-    description: "placeholder",
-    addr: "https://share.google/TZayhAx1eB3KFdZAE",
-  },
-  {
     imgSrc: "resources/al_nihar.png",
     title: "Al Nihar",
     description: "placeholder",
-    addr: "https://share.google/5e6EiHaIjbW2qFqDB1",
+    addr: "https://share.google/ArYso9ylh99Ma8BvX",
   },
   {
     imgSrc: "resources/pul_bangash_wale.png",
