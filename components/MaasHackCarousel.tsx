@@ -78,7 +78,7 @@ export function MaasHackCarousel({ slides }: Props) {
   const activeDot = leaving ? (front + 1) % n : front;
 
   return (
-    <div className="relative mx-auto w-full max-w-3xl">
+    <div className="relative mx-auto w-full max-w-3xl px-2 sm:px-0">
       <div
         className="relative mx-auto"
         style={{ aspectRatio: "16 / 10" }}

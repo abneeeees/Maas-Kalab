@@ -22,9 +22,9 @@ export function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 flex justify-center px-4 py-3 sm:py-4">
+    <header className="sticky top-0 z-50 flex justify-center px-2 py-2 sm:px-4 sm:py-4">
       <nav
-        className={`flex items-center gap-0.5 rounded-full px-1.5 py-1 transition-all duration-500 ${
+        className={`flex items-center gap-0 rounded-full px-1 py-0.5 transition-all duration-500 sm:gap-0.5 sm:px-1.5 sm:py-1 ${
           scrolled
             ? "border border-[var(--nav-border)] bg-[var(--nav-bg-scrolled)] shadow-[0_2px_16px_var(--nav-shadow)] backdrop-blur-xl backdrop-saturate-[1.8]"
             : "border border-transparent bg-transparent shadow-none backdrop-blur-none"
@@ -34,7 +34,7 @@ export function Navbar() {
           <a
             key={item.href}
             href={item.href}
-            className="rounded-full px-3 py-1.5 text-xs font-semibold text-[var(--foreground)] transition-all hover:bg-[var(--red-primary)] hover:text-white sm:px-4 sm:py-2 sm:text-sm"
+            className="rounded-full px-2 py-1 text-[0.65rem] font-semibold text-[var(--foreground)] transition-all hover:bg-[var(--red-primary)] hover:text-white sm:px-4 sm:py-2 sm:text-sm"
           >
             {item.label}
           </a>
