@@ -2,11 +2,20 @@ import { Footer } from "@/components/Footer";
 import { HeroSection } from "@/components/HeroSection";
 import { MaasHackCarousel } from "@/components/MaasHackCarousel";
 import { MiniMaasupGallery } from "@/components/MiniMaasupGallery";
-import { Navbar } from "@/components/Navbar";
+import { Navbar, type NavItem } from "@/components/Navbar";
 import { ResourceGrid } from "@/components/ResourceGrid";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { SectionHeading } from "@/components/SectionHeading";
 import { FoodMarquee } from "@/components/TrilingualStrip";
+
+const navItems: NavItem[] = [
+  { label: "Home", href: "#home" },
+  { label: "Meets", href: "#mass-hack" },
+  { label: "Members", href: "#members" },
+  { label: "Join", href: "#join" },
+  { label: "Resources", href: "#resources" },
+  { label: "MaasHacks", href: "/maashacks" },
+];
 
 const members = [
   { name: "Mallu", description: "President of Maas Kalab"},
@@ -93,28 +102,28 @@ const resources = [
 
 const massHackSlides = [
   {
-    imgSrc: "maashack/maashack_1.png",
+    imgSrc: "maashack_page/one/maashack_1.png",
     title: "Maas Hack 1.0",
     description: "Jama masjid | Chicken Korma, Chicken fry",
     date: "04-10-25",
     href: "/masshacks/1",
   },
   {
-    imgSrc: "maashack/maashack_2.png",
+    imgSrc: "maashack_page/two/maashack_2.png",
     title: "Maas Hack 2.0",
     description: "Shaheen Bagh | Chicken Mandi, Chicken roll, Seekh Kabab",
     date: "28-11-25",
     href: "/masshacks/2",
   },
   {
-    imgSrc: "maashack/maashack_3.png",
+    imgSrc: "maashack_page/three/maashack_3.png",
     title: "Maas Hack 3.0",
     description: "Shaheen Bagh | Seekh Kabab, Nihari, Fish Fry, Shwarma, Gulawati Kebab ka roll",
     date: "05-03-26",
     href: "/masshacks/3",
   },
   {
-    imgSrc: "maashack/maashack_4.png",
+    imgSrc: "maashack_page/four/maashack_4.png",
     title: "Maas Hack 4.0",
     description: "Zakhir Nagar | Lucknowi Galawati Buff Kebab, Buff keema, Varghi Paratha, Roasted and Fried Chicken",
     date: "15-04-26",
@@ -180,7 +189,7 @@ const clubHighlights = [
 export default function Home() {
   return (
     <>
-      <Navbar />
+      <Navbar navItems={navItems} />
       <main className="flex-1">
         <HeroSection highlights={clubHighlights} />
 
