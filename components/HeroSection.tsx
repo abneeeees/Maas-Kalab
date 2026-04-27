@@ -57,14 +57,14 @@ export function HeroSection({ highlights }: { highlights: HeroHighlight[] }) {
       className="relative overflow-x-hidden px-6 py-16 sm:px-10 sm:py-20 lg:px-16 lg:py-24"
     >
       <img
-        src="/decor/fried-chicken.png"
+        src="/decor/fried-chicken.webp"
         alt=""
         aria-hidden
         className="pointer-events-none absolute left-0 top-[22%] z-0 hidden w-[4.75rem] -translate-x-[15%] -rotate-[12deg] select-none opacity-[0.38] drop-shadow-[0_6px_18px_var(--decor-shadow)] sm:block md:left-2 md:w-[5.5rem] lg:top-[26%]"
       />
 
       <img
-        src="/rooster.png"
+        src="/rooster.webp"
         alt=""
         aria-hidden
         className="pointer-events-none absolute right-[2%] top-1/2 z-0 hidden w-52 -translate-y-1/2 opacity-[0.24] lg:block xl:w-64"
@@ -180,7 +180,7 @@ export function HeroSection({ highlights }: { highlights: HeroHighlight[] }) {
           className="mx-auto mt-12 flex items-center justify-center lg:hidden"
         >
           <img
-            src="/rooster.png"
+            src="/rooster.webp"
             alt=""
             aria-hidden
             className="w-20 opacity-[0.45]"

@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   title: "Maas Kalab",
   description: "A club for non vegeterians",
   icons: {
-    icon: "/decor/fried-chicken.png",
-    apple: "/decor/fried-chicken.png",
+    icon: "/decor/fried-chicken.webp",
+    apple: "/decor/fried-chicken.webp",
   },
 };
 

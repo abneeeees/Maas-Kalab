@@ -14,7 +14,7 @@ const navItems: NavItem[] = [
 
 const infoCards: InfoCardProps[] = [
   {
-    imgSrc: "/maashack_page/one/maashack_1.png",
+    imgSrc: "/maashack_page/one/maashack_1.webp",
     alt: "hack 1",
     description: "Jama masjid",
     date: "04-10-25",
@@ -22,7 +22,7 @@ const infoCards: InfoCardProps[] = [
     hack_name: "Maas Hack 1.0",
   },
   {
-    imgSrc: "/maashack_page/two/maashack_2.png",
+    imgSrc: "/maashack_page/two/maashack_2.webp",
     alt: "hack 2",
     description: "Shaheen Bagh",
     date: "28-11-25",
@@ -30,7 +30,7 @@ const infoCards: InfoCardProps[] = [
     hack_name: "Maas Hack 2.0",
   },
   {
-    imgSrc: "/maashack_page/three/maashack_3.png",
+    imgSrc: "/maashack_page/three/maashack_3.webp",
     alt: "hack 3",
     description: "Shaheen Bagh",
     date: "05-03-26",
@@ -38,7 +38,7 @@ const infoCards: InfoCardProps[] = [
     hack_name: "Maas Hack 3.0",
   },
   {
-    imgSrc: "/maashack_page/four/maashack_4.png",
+    imgSrc: "/maashack_page/four/maashack_4.webp",
     alt: "hack 4",
     description: "Zakhir Nagar",
     date: "15-04-26",
