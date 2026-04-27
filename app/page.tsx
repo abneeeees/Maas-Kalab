@@ -33,67 +33,67 @@ const members = [
 
 const resources = [
   {
-    imgSrc: "resources/lucknow_galawati_kebab.png",
+    imgSrc: "resources/lucknow_galawati_kebab.webp",
     title: "Lucknow Galawati Kebab",
     description: "placeholder",
     addr: "https://share.google/w4jvHXaaqOXeuy1iP",
   },
   {
-    imgSrc: "resources/talib_kabab_corner.png",
+    imgSrc: "resources/talib_kabab_corner.webp",
     title: "Talib Kebab Corner",
     description: "placeholder",
     addr: "https://share.google/TZayhAx1eB3KFdZAE",
   },
   {
-    imgSrc: "resources/javed_famous_nihari.png",
+    imgSrc: "resources/javed_famous_nihari.webp",
     title: "Javed Famous Nahari",
     description: "placeholder",
     addr: "https://share.google/B78PTdeWJRClO3G5E",
   },
   {
-    imgSrc: "resources/sab_ke_khatir.png",
+    imgSrc: "resources/sab_ke_khatir.webp",
     title: "Sab Ke Khatir",
     description: "placeholder",
     addr: "https://share.google/MNwV8pWgVkaoWnwB8",
   },
   {
-    imgSrc: "resources/noora_nihari.png",
+    imgSrc: "resources/noora_nihari.webp",
     title: "Noora Nihari",
     description: "placeholder",
     addr: "https://share.google/qSKy2SVXo95wgEKVm",
   },
   {
-    imgSrc: "resources/gulrez_kabab_corner.png",
+    imgSrc: "resources/gulrez_kabab_corner.webp",
     title: "Gulrez Kabab Corner",
     description: "placeholder",
     addr: "https://share.google/pQdWHFnzm1GzWbmio",
   },
   {
-    imgSrc: "resources/hafiz_ji_parathe_wale.png",
+    imgSrc: "resources/hafiz_ji_parathe_wale.webp",
     title: "Hafiz JI Parathe Wale",
     description: "placeholder",
     addr: "https://share.google/0aaDdAPEPtuRPNXY3",
   },
   {
-    imgSrc: "resources/imran_nihari_shop.png",
+    imgSrc: "resources/imran_nihari_shop.webp",
     title: "Imran Nihari Shop Turkmangate Delhi",
     description: "placeholder",
     addr: "https://share.google/v9UlFeH1g9ChM4Z2E",
   },
   {
-    imgSrc: "resources/sangam_kabab_corner.png",
+    imgSrc: "resources/sangam_kabab_corner.webp",
     title: "Sangam Kabab Corner",
     description: "placeholder",
     addr: "https://share.google/zb9N2rAmisskdVEko",
   },
   {
-    imgSrc: "resources/al_nihar.png",
+    imgSrc: "resources/al_nihar.webp",
     title: "Al Nihar",
     description: "placeholder",
     addr: "https://share.google/ArYso9ylh99Ma8BvX",
   },
   {
-    imgSrc: "resources/pul_bangash_wale.png",
+    imgSrc: "resources/pul_bangash_wale.webp",
     title: "Pul Bangash Wale",
     description: "placeholder",
     addr: "https://share.google/aJb6xXr61kKSJ9fNx",
@@ -102,28 +102,28 @@ const resources = [
 
 const massHackSlides = [
   {
-    imgSrc: "maashack_page/one/maashack_1.png",
+    imgSrc: "maashack_page/one/maashack_1.webp",
     title: "Maas Hack 1.0",
     description: "Jama masjid | Chicken Korma, Chicken fry",
     date: "04-10-25",
     href: "/maashacks/1",
   },
   {
-    imgSrc: "maashack_page/two/maashack_2.png",
+    imgSrc: "maashack_page/two/maashack_2.webp",
     title: "Maas Hack 2.0",
     description: "Shaheen Bagh | Chicken Mandi, Chicken roll, Seekh Kabab",
     date: "28-11-25",
     href: "/maashacks/2",
   },
   {
-    imgSrc: "maashack_page/three/maashack_3.png",
+    imgSrc: "maashack_page/three/maashack_3.webp",
     title: "Maas Hack 3.0",
     description: "Shaheen Bagh | Seekh Kabab, Nihari, Fish Fry, Shwarma, Gulawati Kebab ka roll",
     date: "05-03-26",
     href: "/maashacks/3",
   },
   {
-    imgSrc: "maashack_page/four/maashack_4.png",
+    imgSrc: "maashack_page/four/maashack_4.webp",
     title: "Maas Hack 4.0",
     description: "Zakhir Nagar | Lucknowi Galawati Buff Kebab, Buff keema, Varghi Paratha, Roasted and Fried Chicken",
     date: "15-04-26",
@@ -133,31 +133,31 @@ const massHackSlides = [
 
 const miniMeetups = [
   {
-    imgSrc: "miniMeetups/briyani.png",
+    imgSrc: "miniMeetups/briyani.webp",
     title: "Briyani shop near Kolez",
     description: "Placeholder",
     date: "5-12-2025",
   },
   {
-    imgSrc: "miniMeetups/gulawati_kebab.png",
+    imgSrc: "miniMeetups/gulawati_kebab.webp",
     title: "Adarsh Ka Laptop",
     description: "placeholder",
     date: "16-02-2026",
   },
   {
-    imgSrc: "miniMeetups/humayun_tomb.png",
+    imgSrc: "miniMeetups/humayun_tomb.webp",
     title: "Happy B'day",
     description: "placeholder",
     date: "18-03-2026",
   },
   {
-    imgSrc: "miniMeetups/post_foss_hack.png",
+    imgSrc: "miniMeetups/post_foss_hack.webp",
     title: "Post FOSS Hack",
     description: "placeholder",
     date: "29-03-2026 - 31-03-2026",
   },
   {
-    imgSrc: "miniMeetups/Om_ki_briyani.png",
+    imgSrc: "miniMeetups/Om_ki_briyani.webp",
     title: "Om ki Briyani",
     description: "placeholder",
     date: "10-04-2026",
@@ -200,7 +200,7 @@ export default function Home() {
           className="relative overflow-x-hidden px-6 py-16 sm:px-10 lg:px-16"
         >
           <img
-            src="/decor/seekh-kababs.png"
+            src="/decor/seekh-kababs.webp"
             alt=""
             aria-hidden
             className="pointer-events-none absolute right-0 top-[42%] z-0 hidden w-[5rem] translate-x-[12%] rotate-[10deg] select-none opacity-[0.34] drop-shadow-[0_6px_18px_var(--decor-shadow)] sm:block md:right-2 md:w-[5.75rem] lg:top-[38%]"
