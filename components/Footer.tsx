@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
+
 export function Footer() {
   return (
     <footer className="mt-8 px-6 pb-10 sm:px-10 lg:px-16">
@@ -9,6 +12,14 @@ export function Footer() {
             <div className="min-w-0">
               <p className="text-xl font-bold tracking-tight text-[var(--footer-text)]">
                 Maas Kalab
+              <a
+                href="https://github.com/abneeeees/maas-kalab"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2.5 px-3 items-center gap-4"
+                >
+                <FontAwesomeIcon icon={faGithub} size="lg" className="text-amber-400 rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_6px_24px_var(--footer-cta-glow)]"/>
+              </a>
               </p>
               <p className="mt-2 text-sm leading-relaxed text-[var(--footer-muted)]">
                 Powered with 🍗 by{" "}
@@ -23,7 +34,14 @@ export function Footer() {
                   href="https://v8v88v8v88.com"
                   className="font-medium text-[var(--footer-link)] underline decoration-[var(--footer-accent-border)] underline-offset-4 transition-colors hover:text-[var(--footer-link-hover)] hover:decoration-[var(--footer-accent)]"
                 >
-                  V8
+                  V8 
+                </a>
+                {", "}
+                <a
+                  href="https://github.com/Prakhar1808"
+                  className="font-medium text-[var(--footer-link)] underline decoration-[var(--footer-accent-border)] underline-offset-4 transition-colors hover:text-[var(--footer-link-hover)] hover:decoration-[var(--footer-accent)]"
+                >
+                  Prakhar 
                 </a>
                 {" & "}
                 <a
