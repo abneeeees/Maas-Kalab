@@ -25,7 +25,7 @@ const members = [
   { name: "V8", description: "CEO of Maas Kalab"},
   { name: "P4", description: "CEO of Maas Kalab"},
   { name: "LilSuperUser", description: "Maas Explorer"},
-  { name: "AK", description: "Maas Man"},
+  { name: "AK", description: "Vegetarian Imposter"},
   { name: "Satyam", description: "Duke of Dua"},
   { name: "Prakhar", description: "Maas Khor"},
   { name: "Karan", description: "Opposition ka lead"},
