@@ -167,7 +167,13 @@ const miniMeetups = [
     title: "Om ki Briyani 2",
     description: "placeholder",
     date: "04-05-2026",
-  }
+  },
+  {
+    imgSrc: "miniMeetups/10PM_At_V8's.webp",
+    title: "10PM at V8's",
+    description: "placeholder",
+    date: "19-05-2026",
+  },
 ];
 
 const clubHighlights = [

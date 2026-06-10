@@ -53,7 +53,7 @@ export default function Home() {
       <Navbar navItems={navItems} />
 
       <section>
-        <div className="relative z-\[1]\ mx-auto max-w-6xl px-6 py-6 sm:px-10 lg:px-16">
+        <div className="z-\[1]\ mx-auto max-w-6xl px-6 py-6 sm:px-10 lg:px-16">
           <ScrollReveal>
             <SectionHeading
               title="MAAS HACK"
