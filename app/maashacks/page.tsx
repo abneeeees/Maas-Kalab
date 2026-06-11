@@ -47,6 +47,7 @@ const infoCards: InfoCardProps[] = [
   },
 ];
 
+
 export default function Home() {
   return (
     <>

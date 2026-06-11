@@ -1,20 +1,12 @@
-"use client";
+// app/maashacks/[masshack]/page.tsx
 
 import { Navbar, type NavItem } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import MaasHackDropdown from "@/components/MaasHackDropdown";
-import MaasHackNavigation from "@/components/maashack_navigation";
-import { MaasHackCardViewer } from "@/components/MaasHackCardViewer";
-import { useParams } from "next/navigation";
-import { ScrollReveal } from "@/components/ScrollReveal";
+import MaasHackClientPage from "./MaasHackClientPage";
 
-const navItems: NavItem[] = [
-  { label: "Home", href: "/#" },
-  { label: "MaasHacks", href: "/maashacks" },
-];
-
-// Mass hack data for each edition
-const massHackData: Record<
+// Mass hack data source shared/kept on the server side
+export const massHackData: Record<
   string,
   {
     title: string;
@@ -29,14 +21,14 @@ const massHackData: Record<
     title: "Maas Hack 1.0",
     location: "Jama Masjid, Delhi",
     description:
-    "The inaugural of Maas Hacks! We explored the legendary lanes of Jama Masjid, indulging in authentic Chicken Korma and crispy Chicken Fry. The aromatic spices and traditional cooking methods made this an unforgettable culinary journey through Old Delhi's heritage.",
+      "The inaugural of Maas Hacks! We explored the legendary lanes of Jama Masjid, indulging in authentic Chicken Korma and crispy Chicken Fry. The aromatic spices and traditional cooking methods made this an unforgettable culinary journey through Old Delhi's heritage.",
     date: "04 Oct 2025",
     locationhref: "https://maps.app.goo.gl/ffj4ZwSTzKrhMQxU7",
     images: [
-      { src: "/maashack_page/one/maashack_1.webp", caption: ""},
-      { src: "/maashack_page/one/ashwani.webp", caption: ""},
-      { src: "/maashack_page/one/chicken_fry.webp", caption: ""},
-      { src: "/maashack_page/one/jama_masjid.webp", caption: ""},
+      { src: "/maashack_page/one/maashack_1.webp", caption: "" },
+      { src: "/maashack_page/one/ashwani.webp", caption: "" },
+      { src: "/maashack_page/one/chicken_fry.webp", caption: "" },
+      { src: "/maashack_page/one/jama_masjid.webp", caption: "" },
     ],
   },
   "2": {
@@ -47,12 +39,12 @@ const massHackData: Record<
     date: "28 Nov 2025",
     locationhref: "https://maps.app.goo.gl/eDWUVSp9DUSPJSSM9",
     images: [
-      { src: "/maashack_page/two/maashack_2.webp", caption: ""},
-      { src: "/maashack_page/two/three_gng.webp", caption: ""},
-      { src: "/maashack_page/two/mandi.webp", caption: ""},
-      { src: "/maashack_page/two/gng_again.webp", caption: ""},
-      { src: "/maashack_page/two/chai.webp", caption: ""},
-      { src: "/maashack_page/two/car.webp", caption: ""},
+      { src: "/maashack_page/two/maashack_2.webp", caption: "" },
+      { src: "/maashack_page/two/three_gng.webp", caption: "" },
+      { src: "/maashack_page/two/mandi.webp", caption: "" },
+      { src: "/maashack_page/two/gng_again.webp", caption: "" },
+      { src: "/maashack_page/two/chai.webp", caption: "" },
+      { src: "/maashack_page/two/car.webp", caption: "" },
     ],
   },
   "3": {
@@ -71,7 +63,7 @@ const massHackData: Record<
       { src: "/maashack_page/three/fish_fry.webp", caption: "" },
       { src: "/maashack_page/three/shwarma.webp", caption: "" },
       { src: "/maashack_page/three/nihari.webp", caption: "" },
-      { src: "/maashack_page/three/nihari_on_plate.webp", caption: "" }
+      { src: "/maashack_page/three/nihari_on_plate.webp", caption: "" },
     ],
   },
   "4": {
@@ -96,17 +88,31 @@ const massHackData: Record<
       { src: "/maashack_page/four/roasted_again.webp", caption: "" },
       { src: "/maashack_page/four/roasted.webp", caption: "" },
       { src: "/maashack_page/four/sweety.webp", caption: "" },
-      { src: "/maashack_page/four/we_ate.webp", caption: "" }
+      { src: "/maashack_page/four/we_ate.webp", caption: "" },
     ],
   },
 };
 
-export default function MaasHackPage() {
-  const params = useParams();
-  const masshackId = params.masshack as string;
-  const data = massHackData[masshackId];
+const navItems: NavItem[] = [
+  { label: "Home", href: "/#" },
+  { label: "MaasHacks", href: "/maashacks" },
+];
 
-  const currentHackNum = parseInt(masshackId, 10);
+export function generateStaticParams(): { masshack: string }[] {
+  return Object.keys(massHackData).map((id) => ({
+    masshack: id,
+  }));
+}
+
+// Next.js passes dynamic route segments via props in Server Components
+interface PageProps {
+  params: Promise<{ masshack: string }>;
+}
+
+export default async function MaasHackPage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const masshackId = resolvedParams.masshack;
+  const data = massHackData[masshackId];
   const totalHacks = Object.keys(massHackData).length;
 
   if (!data) {
@@ -119,7 +125,7 @@ export default function MaasHackPage() {
               Maas Hack Not Found
             </h1>
             <p className="mt-4 text-[var(--text-muted)]">
-              This Maas Hack edition doesn&apos;t exist yet.
+              This Maas Hack edition doesn't exist yet.
             </p>
           </div>
         </main>
@@ -127,6 +133,8 @@ export default function MaasHackPage() {
       </>
     );
   }
+
+  const currentHackNum = parseInt(masshackId, 10);
 
   return (
     <>
@@ -138,69 +146,14 @@ export default function MaasHackPage() {
           </div>
         }
       />
-
-      <main className="flex-1 px-4 py-8 sm:px-6 sm:py-12">
-        <div className="mx-auto max-w-5xl">
-          {/* Header */}
-          <div className="mb-8 text-center">
-            <ScrollReveal>
-              <h1 className="bg-gradient-to-r from-[var(--red-primary)] to-[var(--amber-accent)] bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl md:text-6xl">
-                {data.title}
-              </h1>
-              <p className="mt-3 text-sm font-medium text-[var(--red-primary)] sm:text-base">
-                {data.date}
-              </p>
-            </ScrollReveal>
-          </div>
-
-          {/* Image Card Viewer */}
-          <MaasHackCardViewer
-            images={data.images}
-            location={data.location}
-            locationhref={data.locationhref}
-            description={data.description}
-            date={data.date}
-            autoPlayInterval={4000}
-          />
-
-          {/* Navigation Buttons */}
-          <MaasHackNavigation
-            previousHack={currentHackNum > 1 ? `/maashacks/${currentHackNum - 1}` : undefined}
-            nextHack={currentHackNum < totalHacks ? `/maashacks/${currentHackNum + 1}` : undefined}
-          />
-
-          {/* Additional Info Section */}
-          <div className="mx-auto mt-12 max-w-2xl rounded-2xl border border-[var(--border-card)] bg-[var(--card-surface)] p-6 shadow-[0_4px_20px_var(--shadow-card-lg)]">
-            <h2 className="mb-4 text-center text-xl font-bold text-[var(--foreground)]">
-              About This Maas Hack
-            </h2>
-            <div className="space-y-3 text-sm text-[var(--text-muted)]">
-              <div className="flex items-start gap-3">
-                <span className="mt-0.5 text-[var(--red-primary)]">📍</span>
-                <div>
-                  <span className="font-semibold text-[var(--foreground)]">Location:</span>{" "}
-                  {data.location}
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="mt-0.5 text-[var(--red-primary)]">📅</span>
-                <div>
-                  <span className="font-semibold text-[var(--foreground)]">Date:</span>{" "}
-                  {data.date}
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="mt-0.5 text-[var(--red-primary)]">🍗</span>
-                <div>
-                  <span className="font-semibold text-[var(--foreground)]">Edition:</span>{" "}
-                  #{currentHackNum}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-
+      {/* Pass data into the Client Component container so you don't break hook contexts
+        like your ScrollReveal or Card components.
+      */}
+      <MaasHackClientPage 
+        data={data} 
+        currentHackNum={currentHackNum} 
+        totalHacks={totalHacks} 
+      />
       <Footer />
     </>
   );
