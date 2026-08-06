@@ -159,6 +159,18 @@ const miniMeetups = [
     description: "placeholder",
     date: "19-05-2026",
   },
+  {
+    imgSrc: "miniMeetups/we_at_jantar_mantar.png",
+    title: "Sansad Chalo",
+    description: "placeholder",
+    date: "20-07-2026",
+  },
+  {
+    imgSrc: "miniMeetups/post_istifa.png",
+    title: "Post Istifa",
+    description: "placeholder",
+    date: "27-07-2026",
+  },
 ];
 
 // Highlights about the club and Dilli ke Maas in general
