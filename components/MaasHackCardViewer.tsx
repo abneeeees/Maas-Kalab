@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, MapPin, Maximize2, Minimize2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Maximize2, Minimize2, RotateCw } from "lucide-react";
 
 type MaasHackImage = {
   src: string;
@@ -84,6 +84,8 @@ export function MaasHackCardViewer({
     setTimeout(() => setIsAnimating(false), 500);
   };
 
+  const [isLandscape, setIsLandscape] = useState(false);
+
   const toggleFullscreen = async () => {
     if (!document.fullscreenElement) {
       try {
@@ -91,14 +93,6 @@ export function MaasHackCardViewer({
           await cardContainerRef.current.requestFullscreen();
         } else {
           setIsFullscreen(true);
-        }
-        // Lock screen orientation to landscape on mobile devices
-        try {
-          if (typeof window !== "undefined" && window.screen?.orientation && typeof window.screen.orientation.lock === "function") {
-            await window.screen.orientation.lock("landscape");
-          }
-        } catch {
-          // Orientation lock might not be supported or allowed by browser policy
         }
       } catch {
         setIsFullscreen(true);
@@ -109,12 +103,29 @@ export function MaasHackCardViewer({
           window.screen.orientation.unlock();
         }
       } catch {}
+      setIsLandscape(false);
       if (document.exitFullscreen) {
         await document.exitFullscreen();
       } else {
         setIsFullscreen(false);
       }
     }
+  };
+
+  const toggleRotation = async () => {
+    try {
+      if (typeof window !== "undefined" && window.screen?.orientation && typeof window.screen.orientation.lock === "function") {
+        if (!isLandscape) {
+          await window.screen.orientation.lock("landscape");
+          setIsLandscape(true);
+        } else {
+          await window.screen.orientation.lock("portrait");
+          setIsLandscape(false);
+        }
+        return;
+      }
+    } catch {}
+    setIsLandscape((prev) => !prev);
   };
 
   useEffect(() => {
@@ -127,6 +138,7 @@ export function MaasHackCardViewer({
             window.screen.orientation.unlock();
           }
         } catch {}
+        setIsLandscape(false);
       }
     };
     document.addEventListener("fullscreenchange", handleFullscreenChange);
@@ -261,11 +273,11 @@ export function MaasHackCardViewer({
           )}
 
           {/* Bottom Frosted Blur Gradient Overlay with Content */}
-          <div className="absolute bottom-0 inset-x-0 p-4 sm:p-7 md:p-8 bg-gradient-to-t from-black/95 via-black/60 to-transparent backdrop-blur-[3px] z-10">
+          <div className="viewer-bottom-overlay absolute bottom-0 inset-x-0 p-4 sm:p-7 md:p-8 bg-gradient-to-t from-black/95 via-black/60 to-transparent backdrop-blur-[3px] z-10 transition-all duration-300">
             {/* Single Row Hover-Triggered Thumbnail Strip with Pointer Inactivity Auto-Hide */}
             {images.length > 1 && (
               <div
-                className={`mb-2.5 sm:mb-3.5 w-full flex justify-center overflow-hidden transition-all duration-500 ease-out ${
+                className={`mb-1 sm:mb-1.5 w-full flex justify-center overflow-hidden transition-all duration-500 ease-out ${
                   showThumbnails
                     ? "opacity-100 translate-y-0 pointer-events-auto"
                     : "opacity-0 translate-y-2 pointer-events-none"
@@ -273,7 +285,7 @@ export function MaasHackCardViewer({
               >
                 <div
                   ref={thumbnailContainerRef}
-                  className="w-fit max-w-full mx-auto flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto py-1 px-0.5 scroll-smooth scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex-nowrap"
+                  className="w-fit max-w-full mx-auto flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto py-0.5 px-0.5 scroll-smooth scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex-nowrap"
                 >
                   {images.map((image, index) => {
                     const isActive = index === currentIndex;
@@ -285,7 +297,7 @@ export function MaasHackCardViewer({
                         }}
                         type="button"
                         onClick={() => goToIndex(index)}
-                        className={`relative shrink-0 h-9 w-14 sm:h-14 sm:w-22 overflow-hidden rounded-lg sm:rounded-xl border-2 transition-all duration-200 cursor-pointer ${
+                        className={`viewer-thumb-btn relative shrink-0 h-10 w-16 sm:h-14 sm:w-22 overflow-hidden rounded-lg sm:rounded-xl border-2 transition-all duration-200 cursor-pointer ${
                           isActive
                             ? "border-[var(--red-primary)] ring-2 ring-[var(--red-primary)]/40 scale-105 shadow-md"
                             : "border-white/20 opacity-60 hover:opacity-100 hover:scale-105"
@@ -311,7 +323,7 @@ export function MaasHackCardViewer({
                   href={locationhref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group/loc min-w-0 flex-1 inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-base md:text-xl font-bold text-white hover:text-[var(--red-primary)] transition-colors"
+                  className="viewer-loc-text group/loc min-w-0 flex-1 inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-base md:text-xl font-bold text-white hover:text-[var(--red-primary)] transition-colors"
                 >
                   <MapPin className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-white shrink-0 transition-transform duration-200 group-hover/loc:scale-110" />
                   <span className="truncate">{location}</span>
@@ -320,7 +332,7 @@ export function MaasHackCardViewer({
                   </span>
                 </a>
               ) : (
-                <div className="min-w-0 flex-1 inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-base md:text-xl font-bold text-white">
+                <div className="viewer-loc-text min-w-0 flex-1 inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-base md:text-xl font-bold text-white">
                   <MapPin className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-white shrink-0" />
                   <span className="truncate">{location}</span>
                 </div>
@@ -333,11 +345,28 @@ export function MaasHackCardViewer({
                   </span>
                 )}
 
+                {/* Rotate Orientation Toggle (Visible in Fullscreen) */}
+                {isFullscreen && (
+                  <button
+                    type="button"
+                    onClick={toggleRotation}
+                    className="viewer-ctrl-btn flex h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 shrink-0 items-center justify-center rounded-full border border-white/25 bg-black/50 text-white backdrop-blur-md shadow-sm transition-all duration-300 hover:scale-110 hover:bg-white hover:text-black hover:border-transparent active:scale-95 cursor-pointer"
+                    aria-label="Rotate screen orientation"
+                    title={isLandscape ? "Rotate to Portrait" : "Rotate to Landscape"}
+                  >
+                    <RotateCw
+                      className={`h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform duration-300 ${
+                        isLandscape ? "rotate-90 text-[var(--red-primary)]" : ""
+                      }`}
+                    />
+                  </button>
+                )}
+
                 {/* Fullscreen Toggle Button */}
                 <button
                   type="button"
                   onClick={toggleFullscreen}
-                  className="flex h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 shrink-0 items-center justify-center rounded-full border border-white/25 bg-black/50 text-white backdrop-blur-md shadow-sm transition-all duration-300 hover:scale-110 hover:bg-white hover:text-black hover:border-transparent active:scale-95 cursor-pointer"
+                  className="viewer-ctrl-btn flex h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 shrink-0 items-center justify-center rounded-full border border-white/25 bg-black/50 text-white backdrop-blur-md shadow-sm transition-all duration-300 hover:scale-110 hover:bg-white hover:text-black hover:border-transparent active:scale-95 cursor-pointer"
                   aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
                   title={isFullscreen ? "Exit Fullscreen (Esc)" : "Fullscreen"}
                 >
@@ -351,7 +380,7 @@ export function MaasHackCardViewer({
             </div>
 
             {/* Description */}
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-white/85 max-w-4xl line-clamp-3 sm:line-clamp-none">
+            <p className="viewer-desc-text text-xs sm:text-sm md:text-base leading-relaxed text-white/85 max-w-4xl line-clamp-3 sm:line-clamp-none">
               {description}
             </p>
 

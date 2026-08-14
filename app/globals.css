@@ -456,3 +456,36 @@ html.dark .google-sheet-pill:hover {
   will-change: transform, opacity;
   transform-origin: center center;
 }
+
+/* Mobile in Landscape Mode ONLY (Height <= 520px AND Landscape Orientation) */
+@media (max-height: 520px) and (orientation: landscape) {
+  .viewer-bottom-overlay {
+    padding: 0.5rem 1rem !important;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.4) 65%, transparent 100%) !important;
+    backdrop-filter: blur(2px) !important;
+  }
+
+  .viewer-thumb-btn {
+    height: 2.2rem !important;
+    width: 3.5rem !important;
+  }
+
+  .viewer-loc-text {
+    font-size: 0.8rem !important;
+  }
+
+  .viewer-desc-text {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 0.72rem !important;
+    line-height: 1.15 !important;
+    margin-top: 0.15rem !important;
+  }
+
+  .viewer-ctrl-btn {
+    height: 1.65rem !important;
+    width: 1.65rem !important;
+  }
+}
