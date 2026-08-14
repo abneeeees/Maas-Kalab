@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, MapPin, Maximize2, Minimize2 } from "lucide-react";
 
 type MaasHackImage = {
   src: string;
@@ -14,6 +15,7 @@ type MaasHackCardViewerProps = {
   date?: string;
   locationhref?: string;
   autoPlayInterval?: number;
+  edition?: number;
 };
 
 export function MaasHackCardViewer({
@@ -22,11 +24,44 @@ export function MaasHackCardViewer({
   description,
   date,
   locationhref,
-  autoPlayInterval = 200,
+  autoPlayInterval = 5000,
+  edition,
 }: MaasHackCardViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showThumbnails, setShowThumbnails] = useState(false);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const cardContainerRef = useRef<HTMLDivElement>(null);
+  const thumbnailContainerRef = useRef<HTMLDivElement>(null);
+  const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const handleMouseMove = () => {
+    setShowThumbnails(true);
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+    }
+    hideTimeoutRef.current = setTimeout(() => {
+      setShowThumbnails(false);
+    }, 2200);
+  };
+
+  const handleMouseLeave = () => {
+    setIsPaused(false);
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+    }
+    setShowThumbnails(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const goToNext = () => {
     if (isAnimating) return;
@@ -49,31 +84,130 @@ export function MaasHackCardViewer({
     setTimeout(() => setIsAnimating(false), 500);
   };
 
+  const toggleFullscreen = async () => {
+    if (!document.fullscreenElement) {
+      try {
+        if (cardContainerRef.current?.requestFullscreen) {
+          await cardContainerRef.current.requestFullscreen();
+        } else {
+          setIsFullscreen(true);
+        }
+        // Lock screen orientation to landscape on mobile devices
+        try {
+          if (typeof window !== "undefined" && window.screen?.orientation && typeof window.screen.orientation.lock === "function") {
+            await window.screen.orientation.lock("landscape");
+          }
+        } catch {
+          // Orientation lock might not be supported or allowed by browser policy
+        }
+      } catch {
+        setIsFullscreen(true);
+      }
+    } else {
+      try {
+        if (typeof window !== "undefined" && window.screen?.orientation && typeof window.screen.orientation.unlock === "function") {
+          window.screen.orientation.unlock();
+        }
+      } catch {}
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else {
+        setIsFullscreen(false);
+      }
+    }
+  };
+
   useEffect(() => {
-    if (isPaused) return;
+    const handleFullscreenChange = () => {
+      const isNowFullscreen = !!document.fullscreenElement;
+      setIsFullscreen(isNowFullscreen);
+      if (!isNowFullscreen) {
+        try {
+          if (typeof window !== "undefined" && window.screen?.orientation && typeof window.screen.orientation.unlock === "function") {
+            window.screen.orientation.unlock();
+          }
+        } catch {}
+      }
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
+
+  // Keyboard navigation for Left / Right arrow keys
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (["INPUT", "TEXTAREA"].includes((e.target as HTMLElement)?.tagName)) return;
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goToPrev();
+        handleMouseMove();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goToNext();
+        handleMouseMove();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [images.length]);
+
+  useEffect(() => {
+    if (isPaused || images.length <= 1) return;
     const interval = setInterval(goToNext, autoPlayInterval);
     return () => clearInterval(interval);
   }, [isPaused, autoPlayInterval, images.length]);
 
-  const currentImage = images[currentIndex];
+  // Safely auto-scroll active thumbnail inside its isolated container ONLY (never shifts page)
+  useEffect(() => {
+    const container = thumbnailContainerRef.current;
+    const activeThumb = thumbnailRefs.current[currentIndex];
+    if (container && activeThumb) {
+      const containerWidth = container.offsetWidth;
+      const thumbLeft = activeThumb.offsetLeft;
+      const thumbWidth = activeThumb.offsetWidth;
+      const targetScroll = thumbLeft - containerWidth / 2 + thumbWidth / 2;
+      container.scrollTo({
+        left: Math.max(0, targetScroll),
+        behavior: "smooth",
+      });
+    }
+  }, [currentIndex]);
+
+  const currentImage = images[currentIndex] ?? images[0];
 
   return (
     <div
-      className="relative mx-auto w-full max-w-4xl"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      ref={cardContainerRef}
+      className={`group relative mx-auto w-full transition-all duration-300 ${
+        isFullscreen
+          ? "fixed inset-0 z-[9999] h-screen w-screen bg-black p-0 m-0 overflow-hidden"
+          : ""
+      }`}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => {
+        setIsPaused(true);
+        handleMouseMove();
+      }}
+      onMouseLeave={handleMouseLeave}
     >
-      {/* Main Card */}
-      <div className="relative overflow-hidden rounded-3xl border border-[var(--nav-border)] bg-[var(--nav-bg-scrolled)] shadow-[0_8px_40px_var(--nav-shadow)] backdrop-blur-xl">
-        {/* Image Container */}
+      {/* Main Card Frame */}
+      <div
+        className={`relative overflow-hidden transition-all duration-300 ${
+          isFullscreen
+            ? "h-screen w-screen rounded-none border-none shadow-none bg-black"
+            : "viewer-box-expand rounded-2xl sm:rounded-3xl border border-[var(--border-card)] shadow-[0_16px_50px_var(--shadow-card-lg)]"
+        }`}
+      >
+        {/* Responsive Image Frame with Aspect Ratio */}
         <div
-          className="relative aspect-[16/10] overflow-hidden sm:aspect-[2/1] cursor-pointer"
-          onClick={goToNext}
+          className={`relative overflow-hidden w-full max-w-full ${
+            isFullscreen
+              ? "h-screen w-screen"
+              : "h-[62vh] min-h-[350px] max-h-[520px] sm:h-auto sm:aspect-[16/10] md:aspect-[16/9.2] lg:aspect-[16/8.8] xl:aspect-[16/8.5] sm:min-h-[560px] md:min-h-[660px] lg:min-h-[740px] sm:max-h-[88vh]"
+          }`}
         >
           {images.map((image, index) => {
             const isActive = index === currentIndex;
-            const isNext = index === (currentIndex + 1) % images.length;
-            const isPrev = index === (currentIndex - 1 + images.length) % images.length;
 
             return (
               <div
@@ -81,136 +215,154 @@ export function MaasHackCardViewer({
                 className={`absolute inset-0 transition-all duration-700 ease-out ${
                   isActive
                     ? "opacity-100 scale-100 blur-0"
-                    : isNext
-                    ? "opacity-0 scale-110 blur-sm"
-                    : isPrev
-                    ? "opacity-0 scale-90 blur-sm"
-                    : "opacity-0 scale-100 blur-md"
+                    : "opacity-0 scale-105 blur-sm pointer-events-none"
                 }`}
               >
                 <img
                   src={image.src}
-                  alt={image.caption || `Maas Hack ${currentIndex + 1}`}
-                  className="h-full w-full object-cover"
+                  alt={image.caption || `Maas Hack Photo ${index + 1}`}
+                  className={`h-full w-full ${isFullscreen ? "object-contain sm:object-cover" : "object-cover"}`}
                 />
               </div>
             );
           })}
 
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--nav-bg-scrolled)] via-transparent to-transparent" />
+          {/* Subtle Top Gradient for Header Badges */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-16 sm:h-20 bg-gradient-to-b from-black/50 to-transparent" />
 
-          {/* Navigation Arrows */}
-          <button
-            onClick={goToPrev}
-            className="absolute left-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--nav-border)] bg-[var(--nav-bg-scrolled)]/80 text-2xl font-semibold text-[var(--foreground)] opacity-0 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-[var(--red-primary)] hover:text-white group-hover:opacity-100 sm:left-6 sm:h-14 sm:w-14"
-            aria-label="Previous image"
-          >
-            ‹
-          </button>
-          <button
-            onClick={goToNext}
-            className="absolute right-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--nav-border)] bg-[var(--nav-bg-scrolled)]/80 text-2xl font-semibold text-[var(--foreground)] opacity-0 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-[var(--red-primary)] hover:text-white group-hover:opacity-100 sm:right-6 sm:h-14 sm:w-14"
-            aria-label="Next image"
-          >
-            ›
-          </button>
-
-          {/* Image Counter */}
-          <div className="absolute right-4 top-4 rounded-full bg-[var(--nav-bg-scrolled)]/90 px-3 py-1.5 text-xs font-bold text-[var(--foreground)] backdrop-blur-md border border-[var(--nav-border)]">
-            {currentIndex + 1} / {images.length}
-          </div>
-
-          {/* Date Badge */}
-          {date && (
-            <div className="absolute left-4 top-4 rounded-full bg-[var(--red-primary)] px-4 py-1.5 text-xs font-bold text-white shadow-lg">
-              {date}
-            </div>
-          )}
-        </div>
-
-        {/* Content Section */}
-        <div className="relative px-6 py-5 sm:px-8 sm:py-6">
-          {/* Location */}
-          <a href={locationhref}>
-            <div className="mb-3 flex items-center gap-2">
-              <svg
-                className="h-5 w-5 text-[var(--red-primary)]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          {/* Visible Side Navigation Arrows (when multi-image) */}
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={goToPrev}
+                className="absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur-md shadow-xl transition-all duration-300 hover:scale-110 hover:bg-[var(--red-primary)] hover:border-transparent active:scale-95 cursor-pointer opacity-85 hover:opacity-100"
+                aria-label="Previous image"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-                <span className="text-lg font-bold text-[var(--foreground)]">
-                  {location}
-                </span>
-            </div>
-          </a>
+                <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
+              </button>
 
-          {/* Description */}
-          <p className="text-sm leading-relaxed text-[var(--text-muted)]">
-            {description}
-          </p>
-
-          {/* Image Caption (if available) */}
-          {currentImage.caption && (
-            <p className="mt-3 text-xs font-medium italic text-[var(--red-primary)]">
-              {currentImage.caption}
-            </p>
+              <button
+                type="button"
+                onClick={goToNext}
+                className="absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur-md shadow-xl transition-all duration-300 hover:scale-110 hover:bg-[var(--red-primary)] hover:border-transparent active:scale-95 cursor-pointer opacity-85 hover:opacity-100"
+                aria-label="Next image"
+              >
+                <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
+              </button>
+            </>
           )}
-        </div>
-      </div>
 
-      {/* Thumbnail Navigation */}
-      <div className="mt-6 flex justify-center gap-2 sm:gap-3">
-        {images.map((image, index) => (
-          <button
-            key={image.src}
-            onClick={() => goToIndex(index)}
-            className={`group relative h-16 w-24 overflow-hidden rounded-xl border-2 transition-all duration-300 sm:h-20 sm:w-32 ${
-              index === currentIndex
-                ? "scale-110 border-[var(--red-primary)] shadow-[0_4px_20px_rgba(127,29,29,0.3)]"
-                : "border-transparent opacity-60 hover:opacity-100 hover:scale-105"
-            }`}
-          >
-            <img
-              src={image.src}
-              alt={`Thumbnail ${index + 1}`}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            {index === currentIndex && (
-              <div className="absolute inset-0 bg-[var(--red-primary)]/20" />
+          {/* Low Opacity Image Counter Badge */}
+          {images.length > 1 && (
+            <div className="absolute right-3 top-3 sm:right-4 sm:top-4 rounded-full bg-black/35 px-2 py-0.5 sm:px-2.5 sm:py-0.5 text-[0.65rem] sm:text-[0.7rem] font-medium text-white/80 backdrop-blur-sm border border-white/10 shadow-sm z-20">
+              {currentIndex + 1} / {images.length}
+            </div>
+          )}
+
+          {/* Bottom Frosted Blur Gradient Overlay with Content */}
+          <div className="absolute bottom-0 inset-x-0 p-4 sm:p-7 md:p-8 bg-gradient-to-t from-black/95 via-black/60 to-transparent backdrop-blur-[3px] z-10">
+            {/* Single Row Hover-Triggered Thumbnail Strip with Pointer Inactivity Auto-Hide */}
+            {images.length > 1 && (
+              <div
+                className={`mb-2.5 sm:mb-3.5 w-full flex justify-center overflow-hidden transition-all duration-500 ease-out ${
+                  showThumbnails
+                    ? "opacity-100 translate-y-0 pointer-events-auto"
+                    : "opacity-0 translate-y-2 pointer-events-none"
+                }`}
+              >
+                <div
+                  ref={thumbnailContainerRef}
+                  className="w-fit max-w-full mx-auto flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto py-1 px-0.5 scroll-smooth scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex-nowrap"
+                >
+                  {images.map((image, index) => {
+                    const isActive = index === currentIndex;
+                    return (
+                      <button
+                        key={image.src}
+                        ref={(el) => {
+                          thumbnailRefs.current[index] = el;
+                        }}
+                        type="button"
+                        onClick={() => goToIndex(index)}
+                        className={`relative shrink-0 h-9 w-14 sm:h-14 sm:w-22 overflow-hidden rounded-lg sm:rounded-xl border-2 transition-all duration-200 cursor-pointer ${
+                          isActive
+                            ? "border-[var(--red-primary)] ring-2 ring-[var(--red-primary)]/40 scale-105 shadow-md"
+                            : "border-white/20 opacity-60 hover:opacity-100 hover:scale-105"
+                        }`}
+                        aria-label={`View photo ${index + 1}`}
+                      >
+                        <img
+                          src={image.src}
+                          alt={`Photo ${index + 1}`}
+                          className="h-full w-full object-cover"
+                        />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             )}
-          </button>
-        ))}
-      </div>
 
-      {/* Progress Dots */}
-      <div className="mt-6 flex justify-center gap-2">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToIndex(index)}
-            className={`h-2.5 rounded-full transition-all duration-300 ${
-              index === currentIndex
-                ? "w-8 bg-[var(--red-primary)]"
-                : "w-2.5 bg-[var(--dot-inactive)] hover:bg-[var(--dot-active)]"
-            }`}
-            aria-label={`Go to image ${index + 1}`}
-          />
-        ))}
+            {/* Location & Parallel Date/Fullscreen Row */}
+            <div className="flex items-center justify-between gap-2 mb-1 sm:mb-1.5 w-full">
+              {locationhref ? (
+                <a
+                  href={locationhref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/loc min-w-0 flex-1 inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-base md:text-xl font-bold text-white hover:text-[var(--red-primary)] transition-colors"
+                >
+                  <MapPin className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-white shrink-0 transition-transform duration-200 group-hover/loc:scale-110" />
+                  <span className="truncate">{location}</span>
+                  <span className="hidden sm:inline text-[0.65rem] sm:text-xs text-white/70 opacity-0 transition-opacity duration-200 group-hover/loc:opacity-100">
+                    (Open in Maps ↗)
+                  </span>
+                </a>
+              ) : (
+                <div className="min-w-0 flex-1 inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-base md:text-xl font-bold text-white">
+                  <MapPin className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-white shrink-0" />
+                  <span className="truncate">{location}</span>
+                </div>
+              )}
+
+              <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
+                {date && (
+                  <span className="text-[0.65rem] sm:text-xs md:text-sm font-medium text-white/80 whitespace-nowrap">
+                    {date}
+                  </span>
+                )}
+
+                {/* Fullscreen Toggle Button */}
+                <button
+                  type="button"
+                  onClick={toggleFullscreen}
+                  className="flex h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 shrink-0 items-center justify-center rounded-full border border-white/25 bg-black/50 text-white backdrop-blur-md shadow-sm transition-all duration-300 hover:scale-110 hover:bg-white hover:text-black hover:border-transparent active:scale-95 cursor-pointer"
+                  aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+                  title={isFullscreen ? "Exit Fullscreen (Esc)" : "Fullscreen"}
+                >
+                  {isFullscreen ? (
+                    <Minimize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  ) : (
+                    <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Description */}
+            <p className="text-xs sm:text-sm md:text-base leading-relaxed text-white/85 max-w-4xl line-clamp-3 sm:line-clamp-none">
+              {description}
+            </p>
+
+            {/* Image Caption */}
+            {currentImage?.caption && (
+              <p className="mt-1.5 sm:mt-2 text-[0.7rem] sm:text-sm font-medium italic text-[var(--red-primary)]">
+                "{currentImage.caption}"
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

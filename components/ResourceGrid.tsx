@@ -15,16 +15,27 @@ export function ResourceGrid({ resources }: { resources: Resource[] }) {
   const [canRight, setCanRight] = useState(false);
   const [canLeft, setCanLeft] = useState(false);
 
+  const tickingRef = useRef(false);
+
   const checkScroll = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanLeft(el.scrollLeft > 8);
-    setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 8);
+    if (tickingRef.current) return;
+    tickingRef.current = true;
+
+    window.requestAnimationFrame(() => {
+      const el = scrollRef.current;
+      if (el) {
+        const nextLeft = el.scrollLeft > 8;
+        const nextRight = el.scrollLeft + el.clientWidth < el.scrollWidth - 8;
+        setCanLeft((prev) => (prev !== nextLeft ? nextLeft : prev));
+        setCanRight((prev) => (prev !== nextRight ? nextRight : prev));
+      }
+      tickingRef.current = false;
+    });
   }, []);
 
   useEffect(() => {
     checkScroll();
-    window.addEventListener("resize", checkScroll);
+    window.addEventListener("resize", checkScroll, { passive: true });
     return () => window.removeEventListener("resize", checkScroll);
   }, [checkScroll]);
 

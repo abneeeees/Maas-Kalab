@@ -113,6 +113,13 @@ const massHackSlides = [
     date: "15-04-26",
     href: "/maashacks/4",
   },
+  {
+    imgSrc: "miniMeetups/post_istifa.png",
+    title: "Maas Hack 5.0",
+    description: "Shaheen Bagh | Al Faham Mandi and HOD Rolls | Dharmendra Pradhaan Steefa Party",
+    date: "27-07-26",
+    href: "/maashacks/5",
+  },
 ];
 
 // Highlights about the mini meetups of Maas Kalab
@@ -164,12 +171,6 @@ const miniMeetups = [
     title: "Sansad Chalo",
     description: "placeholder",
     date: "20-07-2026",
-  },
-  {
-    imgSrc: "miniMeetups/post_istifa.png",
-    title: "Post Istifa",
-    description: "placeholder",
-    date: "27-07-2026",
   },
 ];
 
@@ -317,6 +318,17 @@ const massHackData: Record<
       { src: "/maashack_page/four/roasted.webp", caption: "" },
       { src: "/maashack_page/four/sweety.webp", caption: "" },
       { src: "/maashack_page/four/we_ate.webp", caption: "" },
+    ],
+  },
+  "5": {
+    title: "Maas Hack 5.0",
+    location: "Shaheen Bagh, Delhi",
+    description:
+      "Shaheen Bagh | Al Faham Mandi and HOD Rolls | Dharmendra Pradhaan Steefa Party",
+    date: "27 Jul 2026",
+    locationhref: "https://maps.app.goo.gl/eDWUVSp9DUSPJSSM9",
+    images: [
+      { src: "/miniMeetups/post_istifa.png" },
     ],
   },
 };

@@ -9,10 +9,10 @@ export function FoodMarquee() {
         {repeated.map((item, i) => (
           <span
             key={`${item}-${i}`}
-            className="flex items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] text-white/90"
+            className="flex items-center gap-8 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--marquee-text)]/90"
           >
             {item}
-            <span className="text-white/30" aria-hidden>
+            <span className="text-[var(--marquee-diamond)]/90 text-xs" aria-hidden>
               ◆
             </span>
           </span>

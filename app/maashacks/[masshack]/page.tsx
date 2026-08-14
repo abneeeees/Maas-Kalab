@@ -1,15 +1,15 @@
-// app/maashacks/[masshack]/page.tsx
-
 import { Navbar, type NavItem } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import MaasHackDropdown from "@/components/MaasHackDropdown";
 import MaasHackClientPage from "./MaasHackClientPage";
 import { massHackData } from "@/data/data";
-import Image from "next/image";
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "/#" },
-  { label: "MaasHacks", href: "/maashacks" },
+  { label: "Home", href: "/#home" },
+  { label: "Maas Hack", href: "/#mass-hack" },
+  { label: "Meets", href: "/#mini-meetups" },
+  { label: "Members", href: "/#members" },
+  { label: "Resources", href: "/#resources" },
+  { label: "Join", href: "/#join" },
 ];
 
 export function generateStaticParams(): { masshack: string }[] {
@@ -52,17 +52,7 @@ export default async function MaasHackPage({ params }: PageProps) {
 
   return (
     <>
-      <Navbar
-        navItems={navItems}
-        rightContent={
-          <div className="flex items-center gap-3">
-            <MaasHackDropdown currentHack={currentHackNum} totalHacks={totalHacks} />
-          </div>
-        }
-      />
-      {/* Pass data into the Client Component container so you don't break hook contexts
-        like your ScrollReveal or Card components.
-      */}
+      <Navbar navItems={navItems} />
       <MaasHackClientPage 
         data={data} 
         currentHackNum={currentHackNum} 

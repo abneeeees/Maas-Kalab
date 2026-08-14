@@ -17,13 +17,13 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[var(--foreground)] transition-all duration-200 hover:bg-[var(--red-primary)] hover:text-white active:scale-90 sm:h-9 sm:w-9"
+      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[var(--foreground)]/80 transition-all duration-200 hover:bg-[var(--foreground)]/10 hover:text-[var(--foreground)] active:scale-90"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
       {!mounted ? (
-        <span className="h-4 w-4 rounded-full bg-current opacity-20" />
+        <span className="h-3.5 w-3.5 rounded-full bg-current opacity-20" />
       ) : (
-        <FontAwesomeIcon icon={isDark ? faSun : faMoon} className="h-[1.1rem] w-[1.1rem]" />
+        <FontAwesomeIcon icon={isDark ? faSun : faMoon} className="h-3.5 w-3.5" />
       )}
     </button>
   );

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 type MaasHackDropdownProps = {
   currentHack?: number;
@@ -10,92 +11,73 @@ type MaasHackDropdownProps = {
 
 export default function MaasHackDropdown({
   currentHack = 1,
-  totalHacks = 4,
+  totalHacks = 5,
 }: MaasHackDropdownProps) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const closeTimeout = useRef<NodeJS.Timeout | null>(null);
-  const autoCloseTimeout = useRef<NodeJS.Timeout | null>(null);
-
   const items = Array.from({ length: totalHacks }, (_, i) => i + 1);
 
-  const isValidCurrent = items.includes(currentHack);
-
-  // 🟢 Open instantly on hover
-  const handleMouseEnter = () => {
-    if (closeTimeout.current) clearTimeout(closeTimeout.current);
-    if (autoCloseTimeout.current) clearTimeout(autoCloseTimeout.current);
-
-    setOpen(true);
-
-    // ⏱️ Auto close after 3s
-    autoCloseTimeout.current = setTimeout(() => {
-      setOpen(false);
-    }, 3000);
-  };
-
-  // 🔴 Delay close on leave (so user can move cursor)
-  const handleMouseLeave = () => {
-    closeTimeout.current = setTimeout(() => {
-      setOpen(false);
-    }, 300);
-  };
-
+  // Close on outside click
   useEffect(() => {
-    return () => {
-      if (closeTimeout.current) clearTimeout(closeTimeout.current);
-      if (autoCloseTimeout.current) clearTimeout(autoCloseTimeout.current);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
     };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="relative flex justify-center"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {/* BUTTON */}
+    <div ref={containerRef} className="relative inline-block text-left">
+      {/* Selector Button with clear label */}
       <button
         type="button"
-        className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--nav-border)] 
-        bg-[var(--nav-bg-scrolled)] text-sm font-semibold text-[var(--foreground)] 
-        shadow-[0_2px_16px_var(--nav-shadow)] backdrop-blur-xl backdrop-saturate-[1.8]
-        transition-all duration-300 sm:h-12 sm:w-12 sm:text-base
-        hover:border-[var(--red-primary)] hover:text-[var(--red-primary)]"
+        onClick={() => setOpen((prev) => !prev)}
+        className="inline-flex items-center gap-2 rounded-full border border-[var(--nav-border)] bg-[var(--nav-bg)] px-3.5 py-1.5 text-xs font-semibold text-[var(--foreground)] shadow-sm backdrop-blur-xl transition-all duration-200 hover:border-[var(--red-primary)] hover:text-[var(--red-primary)] active:scale-95 cursor-pointer"
+        aria-expanded={open}
+        aria-haspopup="true"
       >
-        {currentHack}.0
+        <span className="text-[0.68rem] font-bold uppercase tracking-wider text-[var(--red-primary)]">
+          Edition
+        </span>
+        <span className="font-bold">{currentHack}.0</span>
+        <ChevronDown
+          className={`h-3.5 w-3.5 text-[var(--text-muted)] transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
+        />
       </button>
 
-      {/* DROPDOWN */}
+      {/* DROPDOWN MENU */}
       <div
-        className={`absolute top-14 z-20 w-17 origin-top transform rounded-2xl border border-[var(--nav-border)] 
-        bg-[var(--nav-bg-scrolled)] px-3 py-3 shadow-[0_14px_30px_var(--nav-shadow)] 
-        backdrop-blur-xl backdrop-saturate-[1.8]
-        transition-all duration-200 ease-out
-        ${
+        className={`absolute right-0 top-full mt-2 w-44 origin-top-right rounded-2xl border border-[var(--nav-border)] bg-[var(--card-surface)] p-2 shadow-2xl backdrop-blur-xl transition-all duration-200 ease-out z-50 ${
           open
             ? "scale-100 opacity-100 pointer-events-auto"
             : "scale-95 opacity-0 pointer-events-none"
         }`}
       >
-        <div className="flex flex-col items-center gap-1.5 text-base font-semibold text-[var(--foreground)] sm:text-lg">
+        <div className="px-2 py-1 text-[0.65rem] font-bold uppercase tracking-widest text-[var(--text-muted)] border-b border-[var(--border-subtle)]/50 mb-1">
+          Switch Edition
+        </div>
+        <div className="flex flex-col gap-1">
           {items.map((item) => {
-            const isActive = isValidCurrent && item === currentHack;
+            const isActive = item === currentHack;
 
             return (
               <Link
                 key={item}
                 href={`/maashacks/${item}`}
-                className={`w-full rounded-[0.8rem] px-2 py-1 text-center transition-all duration-200
-                ${
+                onClick={() => setOpen(false)}
+                className={`flex items-center justify-between rounded-xl px-3 py-1.5 text-xs font-semibold transition-all duration-150 ${
                   isActive
-                    ? "bg-[var(--red-primary)] text-white"
-                    : "hover:bg-[var(--red-primary)] hover:text-white hover:scale-105"
+                    ? "bg-[var(--red-primary)] text-white shadow-sm"
+                    : "text-[var(--foreground)] hover:bg-[var(--foreground)]/5 hover:text-[var(--red-primary)]"
                 }`}
               >
-                {item}.0
+                <span>Maas Hack {item}.0</span>
+                {isActive && <span className="text-[0.65rem]">●</span>}
               </Link>
             );
           })}

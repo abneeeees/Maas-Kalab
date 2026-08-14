@@ -20,15 +20,15 @@ const desktopLayouts = [
 function getMobileTransform(offset: number) {
   switch (offset) {
     case 0:
-      return { rotate: 0, x: 0, y: 0, scale: 1.04, z: 10, opacity: 1 };
+      return { rotate: 0, x: 0, y: 0, scale: 1.05, z: 10, opacity: 1 };
     case 1:
-      return { rotate: 8, x: 28, y: 6, scale: 0.93, z: 8, opacity: 0.85 };
+      return { rotate: 7, x: 24, y: 8, scale: 0.92, z: 8, opacity: 0.85 };
     case -1:
-      return { rotate: -8, x: -28, y: 6, scale: 0.93, z: 8, opacity: 0.85 };
+      return { rotate: -7, x: -24, y: 8, scale: 0.92, z: 8, opacity: 0.85 };
     case 2:
-      return { rotate: 15, x: 48, y: 14, scale: 0.85, z: 5, opacity: 0.6 };
+      return { rotate: 14, x: 42, y: 16, scale: 0.84, z: 5, opacity: 0.6 };
     case -2:
-      return { rotate: -15, x: -48, y: 14, scale: 0.85, z: 5, opacity: 0.6 };
+      return { rotate: -14, x: -42, y: 16, scale: 0.84, z: 5, opacity: 0.6 };
     default:
       return { rotate: 0, x: 0, y: 30, scale: 0.8, z: 1, opacity: 0 };
   }
@@ -54,7 +54,7 @@ export function MiniMaasupGallery({ meetups }: { meetups: MiniMeetup[] }) {
   return (
     <>
       {/* Mobile: stacked cycling fan */}
-      <div className="relative flex items-center justify-center sm:hidden" style={{ height: "22rem" }}>
+      <div className="relative flex items-center justify-center sm:hidden" style={{ height: "26rem" }}>
         {meetups.map((meetup, i) => {
           const off = signedOffset(i, active, n);
           const pos = getMobileTransform(off);
@@ -74,14 +74,16 @@ export function MiniMaasupGallery({ meetups }: { meetups: MiniMeetup[] }) {
                   src={meetup.imgSrc}
                   alt={meetup.title}
                   draggable={false}
+                  loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover"
                 />
                 <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/65 via-black/5 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-3">
-                  <h3 className="text-[0.8rem] font-semibold leading-tight text-white">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-sm font-semibold leading-tight text-white">
                     {meetup.title}
                   </h3>
-                  <p className="mt-0.5 text-[0.65rem] text-white/65">
+                  <p className="mt-1 text-xs text-white/75">
                     {meetup.date}
                   </p>
                 </div>
@@ -110,6 +112,8 @@ export function MiniMaasupGallery({ meetups }: { meetups: MiniMeetup[] }) {
                     src={meetup.imgSrc}
                     alt={meetup.title}
                     draggable={false}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover transition-transform duration-700 ease-out"
                   />
                   <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/65 via-black/5 to-transparent" />
