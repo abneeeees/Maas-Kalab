@@ -68,12 +68,14 @@ export function RotatingInfoCard({ items }: RotatingInfoCardProps) {
         </div>
 
         <div className="mt-8 flex items-center justify-between gap-4">
-          <div className="flex gap-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-900/10 dark:bg-white/5 border border-stone-900/10 dark:border-white/10 backdrop-blur-md">
             {items.map((item, index) => (
               <span
                 key={item.title}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
-                  index === activeIndex ? "w-10 bg-stone-900" : "w-2.5 bg-stone-300"
+                className={`rounded-full transition-all duration-300 ${
+                  index === activeIndex
+                    ? "w-5 h-2 bg-[var(--red-primary)] shadow-sm"
+                    : "w-2 h-2 bg-stone-400/40 dark:bg-white/20"
                 }`}
               />
             ))}

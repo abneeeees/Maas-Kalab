@@ -44,8 +44,7 @@ export function ScrollReveal({
       variants={variants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.12, margin: "0px 0px -40px 0px" }}
-      style={{ willChange: "transform, opacity", transform: "translateZ(0)" }}
+      viewport={{ once: true, amount: 0.1, margin: "0px 0px -20px 0px" }}
       className={className}
     >
       {children}

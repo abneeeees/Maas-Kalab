@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type MiniMeetup = {
   imgSrc: string;
@@ -42,28 +42,46 @@ function signedOffset(i: number, active: number, n: number) {
 
 export function MiniMaasupGallery({ meetups }: { meetups: MiniMeetup[] }) {
   const [active, setActive] = useState(0);
+  const [isInView, setIsInView] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const n = meetups.length;
 
   useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.05 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isInView) return;
     const id = setInterval(() => {
+      if (document.hidden) return;
       setActive((p) => (p + 1) % n);
-    }, 3000);
+    }, 3200);
     return () => clearInterval(id);
-  }, [n]);
+  }, [isInView, n]);
 
   return (
-    <>
+    <div ref={containerRef}>
       {/* Mobile: stacked cycling fan */}
       <div className="relative flex items-center justify-center sm:hidden" style={{ height: "26rem" }}>
         {meetups.map((meetup, i) => {
           const off = signedOffset(i, active, n);
+          if (Math.abs(off) > 2) return null;
           const pos = getMobileTransform(off);
           return (
             <div
               key={meetup.title}
               className="maasup-card-mobile absolute"
               style={{
-                transform: `translateX(${pos.x}%) rotate(${pos.rotate}deg) translateY(${pos.y}px) scale(${pos.scale})`,
+                transform: `translate3d(${pos.x}%, ${pos.y}px, 0) rotate(${pos.rotate}deg) scale(${pos.scale})`,
                 zIndex: pos.z,
                 opacity: pos.opacity,
               }}
@@ -131,6 +149,6 @@ export function MiniMaasupGallery({ meetups }: { meetups: MiniMeetup[] }) {
           })}
         </div>
       </div>
-    </>
+    </div>
   );
 }

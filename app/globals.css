@@ -173,6 +173,16 @@ html {
   min-height: 100%;
   overflow-x: hidden;
   background-color: var(--background);
+  color-scheme: light;
+  transition: background-color 0.4s ease, color 0.3s ease;
+}
+
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
   background-image:
     radial-gradient(
       ellipse 110% 45% at 50% -12%,
@@ -203,8 +213,7 @@ html {
     );
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  color-scheme: light;
-  transition: background-color 0.4s ease, color 0.3s ease;
+  transform: translateZ(0);
 }
 
 html.dark {
@@ -259,7 +268,7 @@ section {
   will-change: transform;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
-  contain: content;
+  contain: paint layout;
   animation: marquee 32s linear infinite;
 }
 
@@ -277,7 +286,6 @@ section {
   border-radius: 1.1rem;
   border: 2px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  transform: translateZ(0);
   backface-visibility: hidden;
 }
 
@@ -331,7 +339,6 @@ html.dark .masshack-frame {
   border-radius: 1.15rem;
   border: 2px solid rgba(255, 255, 255, 0.45);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
-  transform: translateZ(0);
   backface-visibility: hidden;
   transition: box-shadow 0.4s ease, border-color 0.4s ease;
 }
@@ -371,11 +378,11 @@ html.dark .maasup-card:hover .maasup-frame {
 
 .maasup-card-mobile {
   cursor: pointer;
-  will-change: transform, opacity;
   transform: translateZ(0);
   backface-visibility: hidden;
-  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-              opacity 0.45s ease;
+  -webkit-backface-visibility: hidden;
+  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
+              opacity 0.35s ease;
 }
 
 .google-sheet-pill {

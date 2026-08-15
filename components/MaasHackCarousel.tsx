@@ -29,8 +29,6 @@ export function MaasHackCarousel({ slides }: Props) {
   const [front, setFront] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [dragOffset, setDragOffset] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const [swipingDir, setSwipingDir] = useState<"left" | "right" | null>(null);
 
   const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
@@ -106,37 +104,31 @@ export function MaasHackCarousel({ slides }: Props) {
     resetTimer();
   };
 
-  // Lightweight touch drag handlers on mobile
+  // Zero-jank GPU-accelerated touch swipe handlers for Firefox & all mobile browsers
   const handleTouchStart = (e: React.TouchEvent) => {
     if (swipingDir) return;
     const touch = e.touches[0];
     touchStartRef.current = { x: touch.clientX, y: touch.clientY, t: Date.now() };
-    setIsDragging(true);
-    setDragOffset(0);
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
     if (!touchStartRef.current || swipingDir) return;
-    const touch = e.touches[0];
+    const touch = e.changedTouches?.[0] ?? e.touches?.[0];
+    if (!touch) {
+      touchStartRef.current = null;
+      return;
+    }
     const dx = touch.clientX - touchStartRef.current.x;
     const dy = Math.abs(touch.clientY - touchStartRef.current.y);
-    if (Math.abs(dx) > dy) {
-      setDragOffset(dx);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (!touchStartRef.current || swipingDir) return;
-    const dx = dragOffset;
     touchStartRef.current = null;
-    setIsDragging(false);
-    setDragOffset(0);
 
-    const threshold = 40;
-    if (dx < -threshold) {
-      triggerAdvance();
-    } else if (dx > threshold) {
-      triggerPrev();
+    const threshold = 35;
+    if (Math.abs(dx) > dy && Math.abs(dx) > threshold) {
+      if (dx < 0) {
+        triggerAdvance();
+      } else {
+        triggerPrev();
+      }
     }
   };
 
@@ -262,29 +254,27 @@ export function MaasHackCarousel({ slides }: Props) {
             const pos = (i - front + n) % n;
             if (pos > 2) return null;
 
-            let transform = `translateY(${pos * 12}px) scale(${1 - pos * 0.05})`;
+            let transform = `translate3d(0, ${pos * 12}px, 0) scale(${1 - pos * 0.05})`;
             let opacity = pos === 0 ? 1 : pos === 1 ? 0.8 : 0.55;
             let zIndex = 20 - pos;
 
             if (pos === 0) {
               if (swipingDir === "left") {
-                transform = "translateX(-110%) rotate(-8deg)";
+                transform = "translate3d(-115%, 0, 0) rotate(-6deg)";
                 opacity = 0;
               } else if (swipingDir === "right") {
-                transform = "translateX(110%) rotate(8deg)";
+                transform = "translate3d(115%, 0, 0) rotate(6deg)";
                 opacity = 0;
-              } else if (isDragging) {
-                transform = `translateX(${dragOffset}px) rotate(${dragOffset * 0.04}deg)`;
               }
             } else if (pos === 1) {
               if (swipingDir === "left" || swipingDir === "right") {
-                transform = "translateY(0px) scale(1)";
+                transform = "translate3d(0, 0, 0) scale(1)";
                 opacity = 1;
                 zIndex = 19;
               }
             } else if (pos === 2) {
               if (swipingDir === "left" || swipingDir === "right") {
-                transform = "translateY(12px) scale(0.95)";
+                transform = "translate3d(0, 12px, 0) scale(0.95)";
                 opacity = 0.8;
                 zIndex = 10;
               }
@@ -294,18 +284,15 @@ export function MaasHackCarousel({ slides }: Props) {
               <div
                 key={slide.href}
                 onTouchStart={pos === 0 ? handleTouchStart : undefined}
-                onTouchMove={pos === 0 ? handleTouchMove : undefined}
                 onTouchEnd={pos === 0 ? handleTouchEnd : undefined}
                 onTouchCancel={pos === 0 ? handleTouchEnd : undefined}
                 style={{
                   transform,
                   opacity,
                   zIndex,
-                  transition: isDragging && pos === 0
-                    ? "none"
-                    : "transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease",
+                  transition: "transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.28s ease",
                 }}
-                className={`absolute inset-0 will-change-transform select-none ${
+                className={`absolute inset-0 select-none ${
                   pos === 0 ? "touch-pan-y" : "pointer-events-none"
                 }`}
               >
@@ -356,21 +343,26 @@ export function MaasHackCarousel({ slides }: Props) {
         )}
       </div>
 
-      {/* Minimal Dots Indicator */}
-      <div className="mt-8 flex justify-center items-center gap-2">
-        {slides.map((s, i) => (
-          <button
-            key={s.href}
-            type="button"
-            onClick={() => jumpTo(i)}
-            className={`h-1.5 rounded-full transition-all duration-500 cursor-pointer ${
-              i === front
-                ? "w-8 bg-[var(--red-primary)] shadow-[0_0_12px_var(--primary-btn-shadow)]"
-                : "w-1.5 bg-white/20 hover:bg-white/40"
-            }`}
-            aria-label={`Go to ${s.title}`}
-          />
-        ))}
+      {/* Sleek Balanced Carousel Controller Dock */}
+      <div className="mt-6 sm:mt-8 flex justify-center items-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 dark:bg-white/5 border border-white/10 backdrop-blur-md shadow-sm">
+          {slides.map((s, i) => {
+            const isActive = i === front;
+            return (
+              <button
+                key={s.href}
+                type="button"
+                onClick={() => jumpTo(i)}
+                className={`transition-all duration-300 cursor-pointer rounded-full ${
+                  isActive
+                    ? "w-5 h-2 bg-[var(--red-primary)] shadow-[0_0_8px_var(--primary-btn-shadow)]"
+                    : "w-2 h-2 bg-white/30 hover:bg-white/60 hover:scale-125"
+                }`}
+                aria-label={`Go to ${s.title}`}
+              />
+            );
+          })}
+        </div>
       </div>
     </div>
   );
