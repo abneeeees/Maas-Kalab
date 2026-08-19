@@ -1,5 +1,7 @@
 # Maas Kalab
 
+<img width="1852" height="1065" alt="image" src="https://github.com/user-attachments/assets/fd0a06ec-0c8e-4264-88d1-332a31430510" />
+
 A very serious website for very unserious meat activities.
 
 `Maas Kalab` is a community for non-vegetarian **Maas (Non-Veg)** Lovers who love to eat and cook **Maas**.
