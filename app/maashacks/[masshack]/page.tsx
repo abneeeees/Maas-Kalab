@@ -1,16 +1,7 @@
-import { Navbar, type NavItem } from "@/components/Navbar";
+import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import MaasHackClientPage from "./MaasHackClientPage";
 import { massHackData } from "@/data/data";
-
-const navItems: NavItem[] = [
-  { label: "Home", href: "/#home" },
-  { label: "Maas Hack", href: "/#mass-hack" },
-  { label: "Meets", href: "/#mini-meetups" },
-  { label: "Members", href: "/#members" },
-  { label: "Resources", href: "/#resources" },
-  { label: "Join", href: "/#join" },
-];
 
 export function generateStaticParams(): { masshack: string }[] {
   return Object.keys(massHackData).map((id) => ({
@@ -32,7 +23,7 @@ export default async function MaasHackPage({ params }: PageProps) {
   if (!data) {
     return (
       <>
-        <Navbar navItems={navItems} />
+        <Navbar />
         <main className="flex min-h-screen flex-1 items-center justify-center">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-[var(--foreground)]">
@@ -52,7 +43,7 @@ export default async function MaasHackPage({ params }: PageProps) {
 
   return (
     <>
-      <Navbar navItems={navItems} />
+      <Navbar />
       <MaasHackClientPage 
         data={data} 
         currentHackNum={currentHackNum} 

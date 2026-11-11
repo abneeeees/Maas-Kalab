@@ -27,7 +27,7 @@ export function MaashackMinibox({ infoCardProps }: MaashackMiniboxProps) {
             style={{
               animationDelay: `${index * 90 + 40}ms`,
             }}
-            className="card-rise-up group relative overflow-hidden rounded-3xl border border-[var(--border-card)] bg-[var(--card-surface)] shadow-[0_12px_40px_var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--red-primary)]/40 hover:shadow-[0_20px_50px_var(--shadow-card-lg)]"
+            className="card-rise-up group relative overflow-hidden rounded-3xl border border-[var(--border-card)] bg-[var(--card-surface)] shadow-[0_12px_40px_var(--shadow-card)] transition-all duration-300 hover:border-[var(--red-primary)]/40 hover:shadow-[0_20px_50px_var(--shadow-card-lg)]"
           >
             {card.link ? (
               <Link href={card.link} className="block relative aspect-[16/10] sm:aspect-[16/11] overflow-hidden">
@@ -54,7 +54,7 @@ export function MaashackMinibox({ infoCardProps }: MaashackMiniboxProps) {
                       {card.date}
                     </span>
                   )}
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white backdrop-blur-md shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:bg-white group-hover:text-black group-hover:border-transparent">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white backdrop-blur-md shadow-sm transition-transform duration-300 group-hover:bg-white group-hover:text-black group-hover:border-transparent">
                     <ArrowUpRight className="h-4 w-4" />
                   </span>
                 </div>

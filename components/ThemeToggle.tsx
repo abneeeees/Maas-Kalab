@@ -1,8 +1,7 @@
 "use client";
 
 import { useTheme } from "@/components/ThemeProvider";
-import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
@@ -17,13 +16,13 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[var(--foreground)]/80 transition-all duration-200 hover:bg-[var(--foreground)]/10 hover:text-[var(--foreground)] active:scale-90"
+      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[var(--foreground)]/80 transition-colors hover:bg-[var(--red-primary)]/10 hover:text-[var(--red-primary)]"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
       {!mounted ? (
         <span className="h-3.5 w-3.5 rounded-full bg-current opacity-20" />
       ) : (
-        <FontAwesomeIcon icon={isDark ? faSun : faMoon} className="h-3.5 w-3.5" />
+        isDark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />
       )}
     </button>
   );

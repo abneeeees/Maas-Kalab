@@ -9,7 +9,8 @@ type MiniMeetup = {
   date: string;
 };
 
-const desktopLayouts = [
+// Tilt + vertical offset for each card in the desktop row
+const rowLayouts = [
   { rotate: -5, y: 14 },
   { rotate: -2.5, y: -4 },
   { rotate: 1, y: 4 },
@@ -40,6 +41,26 @@ function signedOffset(i: number, active: number, n: number) {
   return off;
 }
 
+function MaasupFrame({ meetup }: { meetup: MiniMeetup }) {
+  return (
+    <div className="maasup-frame">
+      <img
+        src={meetup.imgSrc}
+        alt={meetup.title}
+        draggable={false}
+        loading="lazy"
+        decoding="async"
+        className="h-full w-full object-cover"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 p-4">
+        <h3 className="text-sm font-semibold leading-tight text-white">{meetup.title}</h3>
+        <p className="mt-1 text-xs text-white/75">{meetup.date}</p>
+      </div>
+    </div>
+  );
+}
+
 export function MiniMaasupGallery({ meetups }: { meetups: MiniMeetup[] }) {
   const [active, setActive] = useState(0);
   const [isInView, setIsInView] = useState(false);
@@ -49,20 +70,19 @@ export function MiniMaasupGallery({ meetups }: { meetups: MiniMeetup[] }) {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { threshold: 0.05 },
-    );
+    const obs = new IntersectionObserver(([entry]) => setIsInView(entry.isIntersecting), {
+      threshold: 0.05,
+    });
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
+  // Auto-cycle only drives the stacked fan (below lg); the desktop row is pure CSS.
   useEffect(() => {
     if (!isInView) return;
+    const desktop = window.matchMedia("(min-width: 1024px)");
     const id = setInterval(() => {
-      if (document.hidden) return;
+      if (document.hidden || desktop.matches) return;
       setActive((p) => (p + 1) % n);
     }, 3200);
     return () => clearInterval(id);
@@ -70,8 +90,8 @@ export function MiniMaasupGallery({ meetups }: { meetups: MiniMeetup[] }) {
 
   return (
     <div ref={containerRef}>
-      {/* Mobile: stacked cycling fan */}
-      <div className="relative flex items-center justify-center sm:hidden" style={{ height: "26rem" }}>
+      {/* Phone / tablet: stacked cycling fan */}
+      <div className="relative flex h-[26rem] items-center justify-center [--spread:1] sm:h-[28rem] sm:[--spread:2] lg:hidden">
         {meetups.map((meetup, i) => {
           const off = signedOffset(i, active, n);
           if (Math.abs(off) > 2) return null;
@@ -81,73 +101,32 @@ export function MiniMaasupGallery({ meetups }: { meetups: MiniMeetup[] }) {
               key={meetup.title}
               className="maasup-card-mobile absolute"
               style={{
-                transform: `translate3d(${pos.x}%, ${pos.y}px, 0) rotate(${pos.rotate}deg) scale(${pos.scale})`,
+                transform: `translate3d(calc(${pos.x}% * var(--spread)), ${pos.y}px, 0) rotate(${pos.rotate}deg) scale(${pos.scale})`,
                 zIndex: pos.z,
                 opacity: pos.opacity,
               }}
               onClick={() => setActive(i)}
             >
-              <div className="maasup-frame">
-                <img
-                  src={meetup.imgSrc}
-                  alt={meetup.title}
-                  draggable={false}
-                  loading="lazy"
-                  decoding="async"
-                  className="h-full w-full object-cover"
-                />
-                <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/65 via-black/5 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="text-sm font-semibold leading-tight text-white">
-                    {meetup.title}
-                  </h3>
-                  <p className="mt-1 text-xs text-white/75">
-                    {meetup.date}
-                  </p>
-                </div>
-              </div>
+              <MaasupFrame meetup={meetup} />
             </div>
           );
         })}
       </div>
 
-      {/* Desktop: spread fan */}
-      <div className="hidden items-center justify-center py-10 sm:flex">
-        <div className="maasup-fan flex items-center">
-          {meetups.map((meetup, i) => {
-            const layout = desktopLayouts[i % desktopLayouts.length];
-            return (
-              <div
-                key={meetup.title}
-                className="maasup-card"
-                style={{
-                  transform: `rotate(${layout.rotate}deg) translateY(${layout.y}px)`,
-                  zIndex: i + 1,
-                }}
-              >
-                <div className="maasup-frame">
-                  <img
-                    src={meetup.imgSrc}
-                    alt={meetup.title}
-                    draggable={false}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-full w-full object-cover transition-transform duration-700 ease-out"
-                  />
-                  <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/65 via-black/5 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                    <h3 className="text-[0.8rem] font-semibold leading-tight text-white sm:text-sm">
-                      {meetup.title}
-                    </h3>
-                    <p className="mt-0.5 text-[0.65rem] text-white/65 sm:text-xs">
-                      {meetup.date}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      {/* Desktop: every card in one row, sized so the row always fits */}
+      <div className="maasup-row hidden py-10 lg:flex" style={{ "--n": n } as React.CSSProperties}>
+        {meetups.map((meetup, i) => {
+          const layout = rowLayouts[i % rowLayouts.length];
+          return (
+            <div
+              key={meetup.title}
+              className="maasup-row-card"
+              style={{ "--r": `${layout.rotate}deg`, "--y": `${layout.y}px` } as React.CSSProperties}
+            >
+              <MaasupFrame meetup={meetup} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

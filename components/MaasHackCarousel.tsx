@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export type MaasHackSlide = {
   imgSrc: string;
@@ -33,6 +33,8 @@ export function MaasHackCarousel({ slides }: Props) {
 
   const timerRef = useRef<ReturnType<typeof setInterval>>(undefined);
   const touchStartRef = useRef<{ x: number; y: number; t: number } | null>(null);
+  // true right after a swipe, so the swipe does not also open the card's link
+  const swipedRef = useRef(false);
 
   useEffect(() => {
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
@@ -108,6 +110,7 @@ export function MaasHackCarousel({ slides }: Props) {
   const handleTouchStart = (e: React.TouchEvent) => {
     if (swipingDir) return;
     const touch = e.touches[0];
+    swipedRef.current = false;
     touchStartRef.current = { x: touch.clientX, y: touch.clientY, t: Date.now() };
   };
 
@@ -124,6 +127,7 @@ export function MaasHackCarousel({ slides }: Props) {
 
     const threshold = 35;
     if (Math.abs(dx) > dy && Math.abs(dx) > threshold) {
+      swipedRef.current = true;
       if (dx < 0) {
         triggerAdvance();
       } else {
@@ -146,7 +150,7 @@ export function MaasHackCarousel({ slides }: Props) {
           goToPrev();
           resetTimer();
         }}
-        className="hidden md:flex absolute -left-4 lg:-left-12 top-1/2 -translate-y-1/2 z-30 h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white/90 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:scale-110 hover:bg-white hover:text-black hover:border-white cursor-pointer active:scale-95"
+        className="hidden md:flex absolute -left-4 lg:-left-12 top-1/2 -translate-y-1/2 z-30 h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white/90 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:bg-white hover:text-black hover:border-white cursor-pointer"
         aria-label="Previous slide"
       >
         <ChevronLeft className="h-5 w-5 lg:h-6 lg:w-6" />
@@ -159,10 +163,28 @@ export function MaasHackCarousel({ slides }: Props) {
           advance();
           resetTimer();
         }}
-        className="hidden md:flex absolute -right-4 lg:-right-10 top-1/2 -translate-y-1/2 z-30 h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white/90 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:scale-110 hover:bg-white hover:text-black hover:border-white cursor-pointer active:scale-95"
+        className="hidden md:flex absolute -right-4 lg:-right-10 top-1/2 -translate-y-1/2 z-30 h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white/90 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:bg-white hover:text-black hover:border-white cursor-pointer"
         aria-label="Next slide"
       >
         <ChevronRight className="h-5 w-5 lg:h-6 lg:w-6" />
+      </button>
+
+      {/* Mobile: thin borderless arrows over the card edges */}
+      <button
+        type="button"
+        onClick={triggerPrev}
+        className="absolute left-2 top-[calc(50%-1.25rem)] z-30 flex h-12 w-9 -translate-y-1/2 items-center justify-center text-white/85 drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)] md:hidden"
+        aria-label="Previous slide"
+      >
+        <ChevronLeft className="h-7 w-7" strokeWidth={1.5} />
+      </button>
+      <button
+        type="button"
+        onClick={triggerAdvance}
+        className="absolute right-2 top-[calc(50%-1.25rem)] z-30 flex h-12 w-9 -translate-y-1/2 items-center justify-center text-white/85 drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)] md:hidden"
+        aria-label="Next slide"
+      >
+        <ChevronRight className="h-7 w-7" strokeWidth={1.5} />
       </button>
 
       <div className="relative mx-auto aspect-[16/12] sm:aspect-[16/10] md:aspect-[16/9.5] lg:aspect-[16/9] max-w-3xl lg:max-w-4xl">
@@ -213,7 +235,7 @@ export function MaasHackCarousel({ slides }: Props) {
                     draggable={false}
                     loading={isFront ? "eager" : "lazy"}
                     decoding="async"
-                    className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                    className="h-full w-full object-cover"
                   />
                   <div
                     className={`pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent transition-opacity duration-300 ${
@@ -230,19 +252,17 @@ export function MaasHackCarousel({ slides }: Props) {
                           {slide.description}
                         </p>
                       </div>
-                      <div className="flex shrink-0 flex-col items-end gap-2">
-                        <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[0.68rem] font-medium text-white/90 backdrop-blur-md sm:text-xs">
-                          {slide.date}
-                        </span>
-                        <Link
-                          href={slide.href}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/15 px-4 py-1.5 text-xs font-semibold text-white backdrop-blur-md shadow-lg transition-all duration-300 hover:bg-white hover:text-black hover:scale-105 active:scale-95 sm:text-sm"
-                        >
-                          View recap
-                          <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-                        </Link>
-                      </div>
+                      <span className="shrink-0 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[0.68rem] font-medium text-white/90 backdrop-blur-md sm:text-xs">
+                        {slide.date}
+                      </span>
                     </div>
+                  )}
+                  {isFront && (
+                    <Link
+                      href={slide.href}
+                      className="absolute inset-0"
+                      aria-label={`Open ${slide.title} recap`}
+                    />
                   )}
                 </div>
               </div>
@@ -323,19 +343,23 @@ export function MaasHackCarousel({ slides }: Props) {
                         {slide.description}
                       </p>
                     </div>
-                    <div className="flex shrink-0 flex-col items-end gap-2">
-                      <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-[0.65rem] font-medium text-white/90 backdrop-blur-md">
-                        {slide.date}
-                      </span>
-                      <Link
-                        href={slide.href}
-                        className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/15 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md shadow-lg transition-all active:scale-95"
-                      >
-                        <span>View recap</span>
-                        <ArrowRight className="h-3 w-3" />
-                      </Link>
-                    </div>
+                    <span className="shrink-0 rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-[0.65rem] font-medium text-white/90 backdrop-blur-md">
+                      {slide.date}
+                    </span>
                   </div>
+                  {pos === 0 && (
+                    <Link
+                      href={slide.href}
+                      onClick={(e) => {
+                        if (swipedRef.current) {
+                          e.preventDefault();
+                          swipedRef.current = false;
+                        }
+                      }}
+                      className="absolute inset-0"
+                      aria-label={`Open ${slide.title} recap`}
+                    />
+                  )}
                 </div>
               </div>
             );
@@ -343,29 +367,21 @@ export function MaasHackCarousel({ slides }: Props) {
         )}
       </div>
 
-      {/* Sleek Balanced Carousel Controller Dock */}
-      <div className="mt-6 sm:mt-8 flex justify-center items-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 dark:bg-white/5 border border-white/10 backdrop-blur-md shadow-sm">
-          {slides.map((s, i) => {
-            const isActive = i === front;
-            return (
-              <button
-                key={s.href}
-                type="button"
-                onClick={() => jumpTo(i)}
-                className={`transition-all duration-300 cursor-pointer rounded-full ${
-                  isActive
-                    ? "w-5 h-2 bg-[var(--red-primary)] shadow-[0_0_8px_var(--primary-btn-shadow)]"
-                    : "w-2 h-2 bg-white/30 hover:bg-white/60 hover:scale-125"
-                }`}
-                aria-label={`Go to ${s.title}`}
-              />
-            );
-          })}
-        </div>
+      <div className="mt-6 flex items-center justify-center gap-2 sm:mt-8">
+        {slides.map((s, i) => (
+          <button
+            key={s.href}
+            type="button"
+            onClick={() => jumpTo(i)}
+            className={`h-2 cursor-pointer rounded-full transition-all duration-300 ${
+              i === front
+                ? "w-5 bg-[var(--red-primary)]"
+                : "w-2 bg-[var(--foreground)]/20 hover:bg-[var(--foreground)]/45"
+            }`}
+            aria-label={`Go to ${s.title}`}
+          />
+        ))}
       </div>
     </div>
   );
 }
-
-

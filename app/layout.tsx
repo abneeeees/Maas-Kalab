@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Maas Kalab",
-  description: "A club for non vegeterians",
+  description: "A club for Maas Khors from Dilli.",
   icons: {
     icon: "/decor/fried-chicken.webp",
     apple: "/decor/fried-chicken.webp",

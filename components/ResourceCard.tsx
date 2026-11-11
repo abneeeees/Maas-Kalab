@@ -16,7 +16,7 @@ export function ResourceCard({
         href={addr}
         target="_blank"
         rel="noopener noreferrer"
-        className="group relative block aspect-[4/3] w-full overflow-hidden rounded-2xl border border-[var(--border-card)] shadow-md transition-all duration-300 hover:border-[var(--red-primary)]/40 hover:shadow-lg"
+        className="group relative block aspect-[4/3] w-full overflow-hidden rounded-2xl border border-[var(--border-card)] transition-colors hover:border-[var(--red-primary)]/40"
       >
         {imgSrc && (
           <img
@@ -28,7 +28,7 @@ export function ResourceCard({
             decoding="async"
           />
         )}
-        <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-t from-black/70 via-transparent to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <h3 className="text-sm font-semibold leading-snug text-white sm:text-base">
             {title}

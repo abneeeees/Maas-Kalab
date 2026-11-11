@@ -1,7 +1,6 @@
 // All the Members of Maas Kalab
 const members = [
   { name: "Mallu", description: "President of Maas Kalab"},
-  { name: "Mango", description: "Prime Minister Maas Kalab"},
   { name: "echidna tea", description: "Vice President of Maas Kalab"},
   { name: "abneeeees", description: "Mentor of Maas Kalab"},
   { name: "V8", description: "CEO of Maas Kalab"},
@@ -9,8 +8,9 @@ const members = [
   { name: "LilSuperUser", description: "Maas Explorer"},
   { name: "AK", description: "Vegetarian Imposter"},
   { name: "Satyam", description: "Duke of Dua"},
-  { name: "Prakhar", description: "Maas Khor"},
-  { name: "Karan", description: "Opposition ka lead"},
+  { name: "Anshul", description: "Maas Khor"},
+  { name: "Bhumi", description: "Maas Khor"},
+  { name: "Aditya Singh", description: "Maas Khor"},
 ];
 
 // Resources related to Maas Kalab and Dilli ke Maas
@@ -114,7 +114,7 @@ const massHackSlides = [
     href: "/maashacks/4",
   },
   {
-    imgSrc: "miniMeetups/post_istifa.png",
+    imgSrc: "miniMeetups/post_istifa.webp",
     title: "Maas Hack 5.0",
     description: "Shaheen Bagh | Al Faham Mandi and HOD Rolls | Dharmendra Pradhaan Steefa Party",
     date: "27-07-26",
@@ -167,33 +167,10 @@ const miniMeetups = [
     date: "19-05-2026",
   },
   {
-    imgSrc: "miniMeetups/we_at_jantar_mantar.png",
+    imgSrc: "miniMeetups/we_at_jantar_mantar.webp",
     title: "Sansad Chalo",
     description: "placeholder",
     date: "20-07-2026",
-  },
-];
-
-// Highlights about the club and Dilli ke Maas in general
-const clubHighlights = [
-  {
-    title: "About Maas Kalab",
-    description:
-      "Maas Kalab is a community of Maas Khors from Dilli — those who love to eat and cook Maas.",
-  },
-  {
-    title: "Maas Hacks and Meetups",
-    description:
-      "Maas Hack is our flagship event and we even do some mini events time to time.",
-  },
-  {
-    title: "What we eat?",
-    description:
-      "Nihari, Biryani, Shwarma, Kebab, Paratha, Kakori Kebab, Gulawati Kebab, Keema etc.",
-  },
-  {
-    title: "Motto",
-    description: "'jo Maas khaye wo mera bhai' ~ Karan",
   },
 ];
 
@@ -202,36 +179,22 @@ const FOOD_ITEMS = [
   "Nihari",
   "Nalli Nihari",
   "Biryani",
-  "Mutton Biryani",
-  "Chicken Biryani",
-  "Kebab",
-  "Shawarma",
-  "Paratha",
-  "Mughlai Paratha",
+  "Seekh Kebab",
+  "Gulawati Kebab",
+  "Kakori Kebab",
+  "Shami Kebab",
+  "Bade Ka Kebab",
   "Korma",
-  "Mutton Korma",
   "Laal Maas",
   "Paya",
   "Kaleji Fry",
   "Bheja Fry",
-  "Bade Ka Keema",
-  "Bade Ka Kebab",
-  "Mutton Qorma",
-  "Mutton Stew",
-  "Raan Roast",
-  "Kakori Kebab",
-  "Gulawati Kebab",
-  "Keema",
   "Keema Naan",
   "Haleem",
-  "Tandoori",
-  "Seekh Kebab",
-  "Boti Kebab",
-  "Shami Kebab",
-  "Galouti Kebab",
-  "Rumali Roti",
+  "Raan Roast",
+  "Shawarma",
+  "Mughlai Paratha",
   "Sheermal",
-  "Khameeri Roti",
 ];
 
 // Mass hack data source shared/kept on the server side
@@ -328,9 +291,9 @@ const massHackData: Record<
     date: "27 Jul 2026",
     locationhref: "https://maps.app.goo.gl/eDWUVSp9DUSPJSSM9",
     images: [
-      { src: "/miniMeetups/post_istifa.png" },
+      { src: "/miniMeetups/post_istifa.webp" },
     ],
   },
 };
 
-export { members, resources, massHackSlides, miniMeetups, clubHighlights, FOOD_ITEMS, massHackData };
+export { members, resources, massHackSlides, miniMeetups, FOOD_ITEMS, massHackData };

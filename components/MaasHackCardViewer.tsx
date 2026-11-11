@@ -87,7 +87,7 @@ export function MaasHackCardViewer({
   const [isLandscape, setIsLandscape] = useState(false);
 
   const toggleFullscreen = async () => {
-    if (!document.fullscreenElement) {
+    if (!isFullscreen) {
       try {
         if (cardContainerRef.current?.requestFullscreen) {
           await cardContainerRef.current.requestFullscreen();
@@ -104,11 +104,28 @@ export function MaasHackCardViewer({
         }
       } catch {}
       setIsLandscape(false);
-      if (document.exitFullscreen) {
+      if (document.fullscreenElement && document.exitFullscreen) {
         await document.exitFullscreen();
       } else {
         setIsFullscreen(false);
       }
+    }
+  };
+
+  // Always points at the latest toggleFullscreen, for the keyboard listener below
+  const toggleFullscreenRef = useRef(toggleFullscreen);
+  toggleFullscreenRef.current = toggleFullscreen;
+
+  // Double click / double tap anywhere on the photo toggles fullscreen (like a video player)
+  const lastTapRef = useRef(0);
+  const handleFrameClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest("button, a")) return;
+    const now = Date.now();
+    if (now - lastTapRef.current < 320) {
+      lastTapRef.current = 0;
+      toggleFullscreen();
+    } else {
+      lastTapRef.current = now;
     }
   };
 
@@ -157,6 +174,9 @@ export function MaasHackCardViewer({
         e.preventDefault();
         goToNext();
         handleMouseMove();
+      } else if (e.key.toLowerCase() === "f" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        toggleFullscreenRef.current();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -212,7 +232,8 @@ export function MaasHackCardViewer({
       >
         {/* Responsive Image Frame with Aspect Ratio */}
         <div
-          className={`relative overflow-hidden w-full max-w-full ${
+          onClick={handleFrameClick}
+          className={`relative touch-manipulation select-none overflow-hidden w-full max-w-full ${
             isFullscreen
               ? "h-screen w-screen"
               : "h-[62vh] min-h-[350px] max-h-[520px] sm:h-auto sm:aspect-[16/10] md:aspect-[16/9.2] lg:aspect-[16/8.8] xl:aspect-[16/8.5] sm:min-h-[560px] md:min-h-[660px] lg:min-h-[740px] sm:max-h-[88vh]"
@@ -248,7 +269,7 @@ export function MaasHackCardViewer({
               <button
                 type="button"
                 onClick={goToPrev}
-                className="absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur-md shadow-xl transition-all duration-300 hover:scale-110 hover:bg-[var(--red-primary)] hover:border-transparent active:scale-95 cursor-pointer opacity-85 hover:opacity-100"
+                className="absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur-md shadow-xl transition-all duration-300 hover:bg-[var(--red-primary)] hover:border-transparent cursor-pointer opacity-85 hover:opacity-100"
                 aria-label="Previous image"
               >
                 <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
@@ -257,7 +278,7 @@ export function MaasHackCardViewer({
               <button
                 type="button"
                 onClick={goToNext}
-                className="absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur-md shadow-xl transition-all duration-300 hover:scale-110 hover:bg-[var(--red-primary)] hover:border-transparent active:scale-95 cursor-pointer opacity-85 hover:opacity-100"
+                className="absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur-md shadow-xl transition-all duration-300 hover:bg-[var(--red-primary)] hover:border-transparent cursor-pointer opacity-85 hover:opacity-100"
                 aria-label="Next image"
               >
                 <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
@@ -272,20 +293,49 @@ export function MaasHackCardViewer({
             </div>
           )}
 
-          {/* Bottom Frosted Blur Gradient Overlay with Content */}
-          <div className="viewer-bottom-overlay absolute bottom-0 inset-x-0 p-4 sm:p-7 md:p-8 bg-gradient-to-t from-black/95 via-black/60 to-transparent backdrop-blur-[3px] z-10 transition-all duration-300">
-            {/* Single Row Hover-Triggered Thumbnail Strip with Pointer Inactivity Auto-Hide */}
-            {images.length > 1 && (
-              <div
-                className={`mb-1 sm:mb-1.5 w-full flex justify-center overflow-hidden transition-all duration-500 ease-out ${
-                  showThumbnails
-                    ? "opacity-100 translate-y-0 pointer-events-auto"
-                    : "opacity-0 translate-y-2 pointer-events-none"
-                }`}
-              >
+          {/* Bottom overlay: caption + controls */}
+          <div className="viewer-bottom-overlay absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/80 via-black/35 to-transparent p-3 pt-10 sm:p-5 sm:pt-14">
+            {/* Image Caption */}
+            {currentImage?.caption && (
+              <p className="text-xs font-medium italic text-white/90 sm:text-sm">
+                "{currentImage.caption}"
+              </p>
+            )}
+
+            {/* Bottom control row: location left, thumbnails middle, date + fullscreen right */}
+            <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:gap-5">
+              {/* Location, bottom-left */}
+              <div className="flex min-w-0 items-center">
+                {locationhref ? (
+                  <a
+                    href={locationhref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="viewer-loc-text group/loc inline-flex min-w-0 max-w-full items-center gap-1.5 text-sm font-bold sm:gap-2 sm:text-base text-white hover:text-[var(--red-primary)] transition-colors"
+                  >
+                    <MapPin className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
+                    <span className="truncate">{location}</span>
+                    <span className="hidden sm:inline text-[0.65rem] sm:text-xs text-white/70 opacity-0 transition-opacity duration-200 group-hover/loc:opacity-100">
+                      (Open in Maps ↗)
+                    </span>
+                  </a>
+                ) : (
+                  <div className="viewer-loc-text inline-flex min-w-0 max-w-full items-center gap-1.5 text-sm font-bold sm:gap-2 sm:text-base text-white">
+                    <MapPin className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
+                    <span className="truncate">{location}</span>
+                  </div>
+                )}
+              </div>
+
+              {images.length > 1 ? (
+                <div
+                  className={`order-first col-span-2 flex min-w-0 justify-center transition-opacity duration-300 sm:order-none sm:col-span-1 ${
+                    showThumbnails ? "opacity-100" : "pointer-events-none opacity-0"
+                  }`}
+                >
                 <div
                   ref={thumbnailContainerRef}
-                  className="w-fit max-w-full mx-auto flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto py-0.5 px-0.5 scroll-smooth scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex-nowrap"
+                  className="flex w-fit max-w-full items-center gap-1.5 sm:gap-2.5 overflow-x-auto py-0.5 px-0.5 scroll-smooth scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex-nowrap"
                 >
                   {images.map((image, index) => {
                     const isActive = index === currentIndex;
@@ -300,7 +350,7 @@ export function MaasHackCardViewer({
                         className={`viewer-thumb-btn relative shrink-0 h-10 w-16 sm:h-14 sm:w-22 overflow-hidden rounded-lg sm:rounded-xl border-2 transition-all duration-200 cursor-pointer ${
                           isActive
                             ? "border-[var(--red-primary)] ring-2 ring-[var(--red-primary)]/40 scale-105 shadow-md"
-                            : "border-white/20 opacity-60 hover:opacity-100 hover:scale-105"
+                            : "border-white/20 opacity-60 hover:opacity-100"
                         }`}
                         aria-label={`View photo ${index + 1}`}
                       >
@@ -313,34 +363,14 @@ export function MaasHackCardViewer({
                     );
                   })}
                 </div>
-              </div>
-            )}
-
-            {/* Location & Parallel Date/Fullscreen Row */}
-            <div className="flex items-center justify-between gap-2 mb-1 sm:mb-1.5 w-full">
-              {locationhref ? (
-                <a
-                  href={locationhref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="viewer-loc-text group/loc min-w-0 flex-1 inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-base md:text-xl font-bold text-white hover:text-[var(--red-primary)] transition-colors"
-                >
-                  <MapPin className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-white shrink-0 transition-transform duration-200 group-hover/loc:scale-110" />
-                  <span className="truncate">{location}</span>
-                  <span className="hidden sm:inline text-[0.65rem] sm:text-xs text-white/70 opacity-0 transition-opacity duration-200 group-hover/loc:opacity-100">
-                    (Open in Maps ↗)
-                  </span>
-                </a>
-              ) : (
-                <div className="viewer-loc-text min-w-0 flex-1 inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-base md:text-xl font-bold text-white">
-                  <MapPin className="h-3.5 w-3.5 sm:h-5 sm:w-5 text-white shrink-0" />
-                  <span className="truncate">{location}</span>
                 </div>
+              ) : (
+                <div className="hidden sm:block" />
               )}
 
-              <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
+              <div className="flex items-center justify-end gap-2 sm:gap-3">
                 {date && (
-                  <span className="text-[0.65rem] sm:text-xs md:text-sm font-medium text-white/80 whitespace-nowrap">
+                  <span className="whitespace-nowrap text-[0.7rem] font-medium text-white/80 sm:text-sm">
                     {date}
                   </span>
                 )}
@@ -350,49 +380,39 @@ export function MaasHackCardViewer({
                   <button
                     type="button"
                     onClick={toggleRotation}
-                    className="viewer-ctrl-btn flex h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 shrink-0 items-center justify-center rounded-full border border-white/25 bg-black/50 text-white backdrop-blur-md shadow-sm transition-all duration-300 hover:scale-110 hover:bg-white hover:text-black hover:border-transparent active:scale-95 cursor-pointer"
+                    className="viewer-ctrl-btn flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/25 bg-black/50 text-white backdrop-blur-md transition-colors hover:border-transparent hover:bg-white hover:text-black sm:h-9 sm:w-9"
                     aria-label="Rotate screen orientation"
                     title={isLandscape ? "Rotate to Portrait" : "Rotate to Landscape"}
                   >
                     <RotateCw
-                      className={`h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform duration-300 ${
+                      className={`h-4 w-4 transition-transform duration-300 ${
                         isLandscape ? "rotate-90 text-[var(--red-primary)]" : ""
                       }`}
                     />
                   </button>
                 )}
 
-                {/* Fullscreen Toggle Button */}
                 <button
                   type="button"
                   onClick={toggleFullscreen}
-                  className="viewer-ctrl-btn flex h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 shrink-0 items-center justify-center rounded-full border border-white/25 bg-black/50 text-white backdrop-blur-md shadow-sm transition-all duration-300 hover:scale-110 hover:bg-white hover:text-black hover:border-transparent active:scale-95 cursor-pointer"
+                  className="viewer-ctrl-btn flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/25 bg-black/50 text-white backdrop-blur-md transition-colors hover:border-transparent hover:bg-white hover:text-black sm:h-9 sm:w-9"
                   aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-                  title={isFullscreen ? "Exit Fullscreen (Esc)" : "Fullscreen"}
+                  title={isFullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
                 >
-                  {isFullscreen ? (
-                    <Minimize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  ) : (
-                    <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  )}
+                  {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
                 </button>
               </div>
             </div>
-
-            {/* Description */}
-            <p className="viewer-desc-text text-xs sm:text-sm md:text-base leading-relaxed text-white/85 max-w-4xl line-clamp-3 sm:line-clamp-none">
-              {description}
-            </p>
-
-            {/* Image Caption */}
-            {currentImage?.caption && (
-              <p className="mt-1.5 sm:mt-2 text-[0.7rem] sm:text-sm font-medium italic text-[var(--red-primary)]">
-                "{currentImage.caption}"
-              </p>
-            )}
           </div>
         </div>
       </div>
+
+      {/* Description: plain text under the viewer */}
+      {!isFullscreen && (
+        <p className="mt-5 px-1 text-base leading-relaxed text-[var(--foreground)]/85 sm:mt-6 sm:text-lg">
+          {description}
+        </p>
+      )}
     </div>
   );
 }

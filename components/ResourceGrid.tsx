@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState, useEffect } from "react";
 import { ResourceCard } from "@/components/ResourceCard";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type Resource = {
   imgSrc: string;
@@ -51,10 +52,10 @@ export function ResourceGrid({ resources }: { resources: Resource[] }) {
         <button
           type="button"
           onClick={() => scroll(-1)}
-          className="absolute -left-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-card)] bg-[var(--card-surface)] text-lg text-[var(--red-primary)] shadow-[0_4px_16px_var(--shadow-card)] transition hover:border-[var(--red-primary)] sm:-left-5"
+          className="absolute -left-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-card)] bg-[var(--card-surface)] text-[var(--red-primary)] shadow-[0_4px_16px_var(--shadow-card)] transition hover:border-[var(--red-primary)] sm:-left-5"
           aria-label="Scroll left"
         >
-          ‹
+          <ChevronLeft className="h-5 w-5" />
         </button>
       )}
 
@@ -82,10 +83,10 @@ export function ResourceGrid({ resources }: { resources: Resource[] }) {
         <button
           type="button"
           onClick={() => scroll(1)}
-          className="absolute -right-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-card)] bg-[var(--card-surface)] text-lg text-[var(--red-primary)] shadow-[0_4px_16px_var(--shadow-card)] transition hover:border-[var(--red-primary)] sm:-right-5"
+          className="absolute -right-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-card)] bg-[var(--card-surface)] text-[var(--red-primary)] shadow-[0_4px_16px_var(--shadow-card)] transition hover:border-[var(--red-primary)] sm:-right-5"
           aria-label="Scroll right"
         >
-          ›
+          <ChevronRight className="h-5 w-5" />
         </button>
       )}
     </div>
