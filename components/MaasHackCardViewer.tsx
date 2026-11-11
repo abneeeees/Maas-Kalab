@@ -303,7 +303,7 @@ export function MaasHackCardViewer({
             )}
 
             {/* Bottom control row: location left, thumbnails middle, date + fullscreen right */}
-            <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:gap-5">
+            <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:grid-cols-[minmax(max-content,1fr)_minmax(0,auto)_minmax(max-content,1fr)] sm:gap-5">
               {/* Location, bottom-left */}
               <div className="flex min-w-0 items-center">
                 {locationhref ? (
@@ -311,13 +311,11 @@ export function MaasHackCardViewer({
                     href={locationhref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="viewer-loc-text group/loc inline-flex min-w-0 max-w-full items-center gap-1.5 text-sm font-bold sm:gap-2 sm:text-base text-white hover:text-[var(--red-primary)] transition-colors"
+                    title="Open in Maps"
+                    className="viewer-loc-text inline-flex min-w-0 max-w-full items-center gap-1.5 text-sm font-bold sm:gap-2 sm:text-base text-white underline-offset-4 hover:underline"
                   >
                     <MapPin className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
                     <span className="truncate">{location}</span>
-                    <span className="hidden sm:inline text-[0.65rem] sm:text-xs text-white/70 opacity-0 transition-opacity duration-200 group-hover/loc:opacity-100">
-                      (Open in Maps ↗)
-                    </span>
                   </a>
                 ) : (
                   <div className="viewer-loc-text inline-flex min-w-0 max-w-full items-center gap-1.5 text-sm font-bold sm:gap-2 sm:text-base text-white">
@@ -329,7 +327,7 @@ export function MaasHackCardViewer({
 
               {images.length > 1 ? (
                 <div
-                  className={`order-first col-span-2 flex min-w-0 justify-center transition-opacity duration-300 sm:order-none sm:col-span-1 ${
+                  className={`order-first col-span-2 flex min-w-0 justify-center transition-opacity duration-300 sm:order-none sm:col-span-1 sm:max-w-[11rem] md:max-w-[17rem] lg:max-w-[32rem] xl:max-w-[46rem] 2xl:max-w-[56rem] ${
                     showThumbnails ? "opacity-100" : "pointer-events-none opacity-0"
                   }`}
                 >
