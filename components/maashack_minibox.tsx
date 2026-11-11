@@ -49,12 +49,12 @@ export function MaashackMinibox({ infoCardProps }: MaashackMiniboxProps) {
                 {/* Top Badges Row */}
                 <div className="absolute top-4 inset-x-4 flex items-center justify-between z-10">
                   {card.date && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-wider text-white backdrop-blur-md shadow-sm">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-wider text-white shadow-sm">
                       <Calendar className="h-3 w-3 text-white" />
                       {card.date}
                     </span>
                   )}
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white backdrop-blur-md shadow-sm transition-transform duration-300 group-hover:bg-white group-hover:text-black group-hover:border-transparent">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white shadow-sm transition-transform duration-300 group-hover:bg-white group-hover:text-black group-hover:border-transparent">
                     <ArrowUpRight className="h-4 w-4" />
                   </span>
                 </div>

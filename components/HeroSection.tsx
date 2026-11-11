@@ -33,7 +33,7 @@ export function HeroSection() {
   return (
     <section
       id="home"
-      className="top-glow relative flex min-h-[calc(100svh-4rem)] flex-col justify-center overflow-x-hidden px-4 pt-24 pb-10 sm:px-10 sm:pt-28 sm:pb-12 lg:px-16"
+      className="top-glow relative flex min-h-[calc(100svh-4rem)] flex-col justify-center overflow-x-clip px-4 pt-24 pb-10 sm:px-10 sm:pt-28 sm:pb-12 lg:px-16"
     >
 
       <img

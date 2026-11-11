@@ -18,67 +18,56 @@ const resources = [
   {
     imgSrc: "resources/lucknow_galawati_kebab.webp",
     title: "Lucknow Galawati Kebab",
-    description: "placeholder",
     addr: "https://share.google/w4jvHXaaqOXeuy1iP",
   },
   {
     imgSrc: "resources/talib_kabab_corner.webp",
     title: "Talib Kebab Corner",
-    description: "placeholder",
     addr: "https://share.google/TZayhAx1eB3KFdZAE",
   },
   {
     imgSrc: "resources/javed_famous_nihari.webp",
     title: "Javed Famous Nahari",
-    description: "placeholder",
     addr: "https://share.google/B78PTdeWJRClO3G5E",
   },
   {
     imgSrc: "resources/sab_ke_khatir.webp",
     title: "Sab Ke Khatir",
-    description: "placeholder",
     addr: "https://share.google/MNwV8pWgVkaoWnwB8",
   },
   {
     imgSrc: "resources/noora_nihari.webp",
     title: "Noora Nihari",
-    description: "placeholder",
     addr: "https://share.google/qSKy2SVXo95wgEKVm",
   },
   {
     imgSrc: "resources/gulrez_kabab_corner.webp",
     title: "Gulrez Kabab Corner",
-    description: "placeholder",
     addr: "https://share.google/pQdWHFnzm1GzWbmio",
   },
   {
     imgSrc: "resources/hafiz_ji_parathe_wale.webp",
     title: "Hafiz JI Parathe Wale",
-    description: "placeholder",
     addr: "https://share.google/0aaDdAPEPtuRPNXY3",
   },
   {
     imgSrc: "resources/imran_nihari_shop.webp",
     title: "Imran Nihari Shop Turkmangate Delhi",
-    description: "placeholder",
     addr: "https://share.google/v9UlFeH1g9ChM4Z2E",
   },
   {
     imgSrc: "resources/sangam_kabab_corner.webp",
     title: "Sangam Kabab Corner",
-    description: "placeholder",
     addr: "https://share.google/zb9N2rAmisskdVEko",
   },
   {
     imgSrc: "resources/al_nihar.webp",
     title: "Al Nihar",
-    description: "placeholder",
     addr: "https://share.google/ArYso9ylh99Ma8BvX",
   },
   {
     imgSrc: "resources/pul_bangash_wale.webp",
     title: "Pul Bangash Wale",
-    description: "placeholder",
     addr: "https://share.google/aJb6xXr61kKSJ9fNx",
   },
 ];
@@ -127,50 +116,66 @@ const miniMeetups = [
   {
     imgSrc: "miniMeetups/briyani.webp",
     title: "Briyani shop near Kolez",
-    description: "Placeholder",
     date: "5-12-2025",
   },
   {
     imgSrc: "miniMeetups/gulawati_kebab.webp",
     title: "Adarsh Ka Laptop",
-    description: "placeholder",
     date: "16-02-2026",
   },
   {
     imgSrc: "miniMeetups/humayun_tomb.webp",
     title: "Happy B'day",
-    description: "placeholder",
     date: "18-03-2026",
   },
   {
     imgSrc: "miniMeetups/post_foss_hack.webp",
     title: "Post FOSS Hack",
-    description: "placeholder",
     date: "29-03-2026 - 31-03-2026",
   },
   {
     imgSrc: "miniMeetups/Om_ki_briyani.webp",
     title: "Om ki Briyani",
-    description: "placeholder",
     date: "10-04-2026",
   },
   {
     imgSrc: "miniMeetups/om_ki_briyani.webp",
     title: "Om ki Briyani 2",
-    description: "placeholder",
     date: "04-05-2026",
   },
   {
     imgSrc: "miniMeetups/10PM_At_V8's.webp",
     title: "10PM at V8's",
-    description: "placeholder",
     date: "19-05-2026",
   },
   {
     imgSrc: "miniMeetups/we_at_jantar_mantar.webp",
     title: "Sansad Chalo",
-    description: "placeholder",
     date: "20-07-2026",
+  },
+];
+
+// Kalab rules / code of conduct, shown on the home page
+const rules = [
+  {
+    title: "No day excuses",
+    text: "Tuesday, Thursday, Saturday or any other religious day: no exceptions allowed.",
+  },
+  {
+    title: "Stay active",
+    text: "Be active in the group and respond when meet timings are being decided.",
+  },
+  {
+    title: "Three strikes",
+    text: "Miss three meets in a row without a valid reason and you get nuked from the group.",
+  },
+  {
+    title: "No larping",
+    text: "No larping around. This is a very serious (non-serious) group.",
+  },
+  {
+    title: "Respect sentiments",
+    text: "If someone doesn't eat something for religious reasons, we don't force them or poke them about it.",
   },
 ];
 
@@ -287,7 +292,7 @@ const massHackData: Record<
     title: "Maas Hack 5.0",
     location: "Shaheen Bagh, Delhi",
     description:
-      "Shaheen Bagh | Al Faham Mandi and HOD Rolls | Dharmendra Pradhaan Steefa Party",
+      "Maas Hack 5.0 was a celebration. Dharmendra Pradhan had resigned, and Maas Kalab decided that called for a meetup. We went back to Shaheen Bagh for Al Faham Mandi and HOD Rolls, and the whole party was sponsored by V8.",
     date: "27 Jul 2026",
     locationhref: "https://maps.app.goo.gl/eDWUVSp9DUSPJSSM9",
     images: [
@@ -296,4 +301,4 @@ const massHackData: Record<
   },
 };
 
-export { members, resources, massHackSlides, miniMeetups, FOOD_ITEMS, massHackData };
+export { members, resources, massHackSlides, miniMeetups, rules, FOOD_ITEMS, massHackData };

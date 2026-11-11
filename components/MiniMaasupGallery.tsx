@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 type MiniMeetup = {
   imgSrc: string;
   title: string;
-  description: string;
   date: string;
 };
 

@@ -10,12 +10,13 @@ const navItems = [
   { label: "Meets", href: "/#mini-meetups" },
   { label: "Places", href: "/#places" },
   { label: "Members", href: "/#members" },
+  { label: "Rules", href: "/#rules" },
 ];
 
 const JOIN = { label: "Join", href: "/#join" };
 
 const BAR =
-  "border border-[var(--nav-border)] bg-[var(--nav-bg)] shadow-[0_2px_12px_var(--nav-shadow)] backdrop-blur-lg";
+  "border border-[var(--nav-border)] bg-[var(--nav-bg)] shadow-[0_2px_12px_var(--nav-shadow)]";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);

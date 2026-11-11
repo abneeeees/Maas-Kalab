@@ -1,7 +1,6 @@
 type ResourceCardProps = {
   imgSrc?: string;
   title: string;
-  description?: string;
   addr: string;
 };
 

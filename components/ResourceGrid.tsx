@@ -7,7 +7,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 type Resource = {
   imgSrc: string;
   title: string;
-  description: string;
   addr: string;
 };
 
@@ -72,7 +71,6 @@ export function ResourceGrid({ resources }: { resources: Resource[] }) {
             <ResourceCard
               imgSrc={r.imgSrc}
               title={r.title}
-              description={r.description}
               addr={r.addr}
             />
           </div>

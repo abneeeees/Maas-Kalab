@@ -14,7 +14,7 @@
   --border-card: rgba(28, 28, 28, 0.1);
   --shadow-card: rgba(28, 28, 28, 0.05);
   --shadow-card-lg: rgba(28, 28, 28, 0.1);
-  --nav-bg: rgba(255, 255, 255, 0.88);
+  --nav-bg: rgba(255, 255, 255, 0.96);
   --nav-border: rgba(28, 28, 28, 0.12);
   --nav-shadow: rgba(28, 28, 28, 0.1);
   --hero-pill-bg: #ffffff;
@@ -40,7 +40,7 @@ html.dark {
   --border-card: rgba(255, 255, 255, 0.1);
   --shadow-card: rgba(0, 0, 0, 0.5);
   --shadow-card-lg: rgba(0, 0, 0, 0.65);
-  --nav-bg: rgba(20, 20, 20, 0.85);
+  --nav-bg: rgba(20, 20, 20, 0.95);
   --nav-border: rgba(255, 255, 255, 0.12);
   --nav-shadow: rgba(0, 0, 0, 0.6);
   --hero-pill-bg: rgba(226, 55, 68, 0.12);
@@ -57,13 +57,12 @@ html.dark {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 html {
   scroll-behavior: smooth;
   min-height: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   background-color: var(--background);
   color-scheme: light;
 }
@@ -87,7 +86,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 * {
@@ -129,9 +128,6 @@ section {
 
 .masshack-deck-card {
   cursor: pointer;
-  will-change: transform, opacity;
-  transform: translateZ(0);
-  backface-visibility: hidden;
   transition:
     transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.4s ease;
@@ -141,7 +137,6 @@ section {
   border-radius: 1.1rem;
   border: 2px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  backface-visibility: hidden;
 }
 
 html.dark .masshack-frame {
@@ -230,7 +225,6 @@ html.dark .maasup-frame {
 
 .card-rise-up {
   animation: cardRiseUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
-  will-change: transform, opacity;
 }
 
 @keyframes headingRiseUp {
@@ -246,7 +240,6 @@ html.dark .maasup-frame {
 
 .heading-rise-up {
   animation: headingRiseUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-  will-change: transform, opacity;
 }
 
 /* Viewer Dedicated Box Expand & Rise Animation */
@@ -263,7 +256,6 @@ html.dark .maasup-frame {
 
 .viewer-box-expand {
   animation: viewerBoxExpand 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
-  will-change: transform, opacity;
   transform-origin: center center;
 }
 

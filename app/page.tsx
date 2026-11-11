@@ -7,7 +7,7 @@ import { ResourceGrid } from "@/components/ResourceGrid";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { SectionHeading } from "@/components/SectionHeading";
 import { FoodMarquee } from "@/components/FoodMarquee";
-import { massHackData, massHackSlides, members, miniMeetups, resources } from "@/data/data";
+import { massHackData, massHackSlides, members, miniMeetups, resources, rules } from "@/data/data";
 import { FileSpreadsheet } from "lucide-react";
 
 const SECTION = "px-4 py-16 sm:px-10 sm:py-20 lg:px-16";
@@ -46,7 +46,7 @@ export default function Home() {
           </ScrollReveal>
         </section>
 
-        <section id="mass-hack" className={`overflow-x-hidden ${SECTION}`}>
+        <section id="mass-hack" className={`overflow-x-clip ${SECTION}`}>
           <div className="mx-auto max-w-6xl">
             <ScrollReveal>
               <SectionHeading
@@ -59,7 +59,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="mini-meetups" className={`overflow-x-hidden ${SECTION}`}>
+        <section id="mini-meetups" className={`overflow-x-clip ${SECTION}`}>
           <div className="mx-auto max-w-6xl">
             <ScrollReveal>
               <SectionHeading
@@ -109,6 +109,35 @@ export default function Home() {
                 </li>
               ))}
             </ul>
+          </div>
+        </section>
+
+        <section id="rules" className={SECTION}>
+          <div className="mx-auto max-w-3xl">
+            <ScrollReveal>
+              <SectionHeading title="Kalab Rules" description="Five rules. Read them before you join." />
+            </ScrollReveal>
+            <ol>
+              {rules.map((rule, i) => (
+                <li
+                  key={rule.title}
+                  className="flex gap-5 border-t border-[var(--border-subtle)] py-5 sm:gap-7"
+                >
+                  <span
+                    className="w-8 shrink-0 text-3xl font-black leading-none tracking-tight text-[var(--red-primary)] sm:w-10 sm:text-4xl"
+                    aria-hidden
+                  >
+                    {i + 1}
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-bold tracking-tight text-[var(--foreground)]">
+                      {rule.title}
+                    </h3>
+                    <p className="mt-1 text-base leading-relaxed text-[var(--text-muted)]">{rule.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
         </section>
 

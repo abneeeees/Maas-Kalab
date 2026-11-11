@@ -150,7 +150,7 @@ export function MaasHackCarousel({ slides }: Props) {
           goToPrev();
           resetTimer();
         }}
-        className="hidden md:flex absolute -left-4 lg:-left-12 top-1/2 -translate-y-1/2 z-30 h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white/90 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:bg-white hover:text-black hover:border-white cursor-pointer"
+        className="hidden md:flex absolute -left-4 lg:-left-12 top-1/2 -translate-y-1/2 z-30 h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white/90 shadow-2xl transition-all duration-300 hover:bg-white hover:text-black hover:border-white cursor-pointer"
         aria-label="Previous slide"
       >
         <ChevronLeft className="h-5 w-5 lg:h-6 lg:w-6" />
@@ -163,7 +163,7 @@ export function MaasHackCarousel({ slides }: Props) {
           advance();
           resetTimer();
         }}
-        className="hidden md:flex absolute -right-4 lg:-right-10 top-1/2 -translate-y-1/2 z-30 h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white/90 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:bg-white hover:text-black hover:border-white cursor-pointer"
+        className="hidden md:flex absolute -right-4 lg:-right-10 top-1/2 -translate-y-1/2 z-30 h-11 w-11 lg:h-12 lg:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white/90 shadow-2xl transition-all duration-300 hover:bg-white hover:text-black hover:border-white cursor-pointer"
         aria-label="Next slide"
       >
         <ChevronRight className="h-5 w-5 lg:h-6 lg:w-6" />
@@ -252,7 +252,7 @@ export function MaasHackCarousel({ slides }: Props) {
                           {slide.description}
                         </p>
                       </div>
-                      <span className="shrink-0 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[0.68rem] font-medium text-white/90 backdrop-blur-md sm:text-xs">
+                      <span className="shrink-0 rounded-full border border-white/15 bg-black/45 px-3 py-1 text-[0.68rem] font-medium text-white/90 sm:text-xs">
                         {slide.date}
                       </span>
                     </div>
@@ -343,7 +343,7 @@ export function MaasHackCarousel({ slides }: Props) {
                         {slide.description}
                       </p>
                     </div>
-                    <span className="shrink-0 rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-[0.65rem] font-medium text-white/90 backdrop-blur-md">
+                    <span className="shrink-0 rounded-full border border-white/15 bg-black/45 px-2.5 py-0.5 text-[0.65rem] font-medium text-white/90">
                       {slide.date}
                     </span>
                   </div>

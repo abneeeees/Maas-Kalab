@@ -35,7 +35,7 @@ export default function MaasHackClientPage({ data, currentHackNum, totalHacks }:
   }, []);
 
   return (
-    <main className="top-glow relative overflow-x-hidden flex-1 px-3 sm:px-6 pt-16 sm:pt-20 md:pt-22 pb-14 sm:pb-18 w-full max-w-full">
+    <main className="top-glow relative overflow-x-clip flex-1 px-3 sm:px-6 pt-16 sm:pt-20 md:pt-22 pb-14 sm:pb-18 w-full max-w-full">
       <div className="relative z-[1] mx-auto max-w-6xl xl:max-w-[1440px] w-full min-w-0">
         {/* Header with Clickable Number */}
         <div className="heading-rise-up relative z-30 mb-8 sm:mb-10 md:mb-12 text-center">

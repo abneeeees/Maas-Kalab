@@ -32,6 +32,7 @@ export function MaasHackCardViewer({
   const [isPaused, setIsPaused] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showThumbnails, setShowThumbnails] = useState(false);
+  const [thumbsMounted, setThumbsMounted] = useState(false);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const cardContainerRef = useRef<HTMLDivElement>(null);
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
@@ -39,6 +40,7 @@ export function MaasHackCardViewer({
 
   const handleMouseMove = () => {
     setShowThumbnails(true);
+    setThumbsMounted(true);
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current);
     }
@@ -205,6 +207,18 @@ export function MaasHackCardViewer({
     }
   }, [currentIndex]);
 
+  // Photos are mounted only once they are the current one or a neighbour, so a hack
+  // with 15 photos does not download and decode all of them up front.
+  const [mounted, setMounted] = useState(() => new Set([0, 1, images.length - 1]));
+  useEffect(() => {
+    setMounted((prev) => {
+      const next = new Set(prev);
+      const n = images.length;
+      [currentIndex, (currentIndex + 1) % n, (currentIndex - 1 + n) % n].forEach((i) => next.add(i));
+      return next.size === prev.size ? prev : next;
+    });
+  }, [currentIndex, images.length]);
+
   const currentImage = images[currentIndex] ?? images[0];
 
   return (
@@ -245,17 +259,18 @@ export function MaasHackCardViewer({
             return (
               <div
                 key={image.src}
-                className={`absolute inset-0 transition-all duration-700 ease-out ${
-                  isActive
-                    ? "opacity-100 scale-100 blur-0"
-                    : "opacity-0 scale-105 blur-sm pointer-events-none"
+                className={`absolute inset-0 transition-opacity duration-500 ease-out ${
+                  isActive ? "opacity-100" : "pointer-events-none opacity-0"
                 }`}
               >
-                <img
-                  src={image.src}
-                  alt={image.caption || `Maas Hack Photo ${index + 1}`}
-                  className={`h-full w-full ${isFullscreen ? "object-contain sm:object-cover" : "object-cover"}`}
-                />
+                {mounted.has(index) && (
+                  <img
+                    src={image.src}
+                    alt={image.caption || `Maas Hack Photo ${index + 1}`}
+                    decoding="async"
+                    className={`h-full w-full ${isFullscreen ? "object-contain sm:object-cover" : "object-cover"}`}
+                  />
+                )}
               </div>
             );
           })}
@@ -269,7 +284,7 @@ export function MaasHackCardViewer({
               <button
                 type="button"
                 onClick={goToPrev}
-                className="absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur-md shadow-xl transition-all duration-300 hover:bg-[var(--red-primary)] hover:border-transparent cursor-pointer opacity-85 hover:opacity-100"
+                className="absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white shadow-xl transition-all duration-300 hover:bg-[var(--red-primary)] hover:border-transparent cursor-pointer opacity-85 hover:opacity-100"
                 aria-label="Previous image"
               >
                 <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
@@ -278,7 +293,7 @@ export function MaasHackCardViewer({
               <button
                 type="button"
                 onClick={goToNext}
-                className="absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur-md shadow-xl transition-all duration-300 hover:bg-[var(--red-primary)] hover:border-transparent cursor-pointer opacity-85 hover:opacity-100"
+                className="absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white shadow-xl transition-all duration-300 hover:bg-[var(--red-primary)] hover:border-transparent cursor-pointer opacity-85 hover:opacity-100"
                 aria-label="Next image"
               >
                 <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
@@ -288,7 +303,7 @@ export function MaasHackCardViewer({
 
           {/* Low Opacity Image Counter Badge */}
           {images.length > 1 && (
-            <div className="absolute right-3 top-3 sm:right-4 sm:top-4 rounded-full bg-black/35 px-2 py-0.5 sm:px-2.5 sm:py-0.5 text-[0.65rem] sm:text-[0.7rem] font-medium text-white/80 backdrop-blur-sm border border-white/10 shadow-sm z-20">
+            <div className="absolute right-3 top-3 sm:right-4 sm:top-4 rounded-full bg-black/35 px-2 py-0.5 sm:px-2.5 sm:py-0.5 text-[0.65rem] sm:text-[0.7rem] font-medium text-white/80 border border-white/10 shadow-sm z-20">
               {currentIndex + 1} / {images.length}
             </div>
           )}
@@ -325,7 +340,7 @@ export function MaasHackCardViewer({
                 )}
               </div>
 
-              {images.length > 1 ? (
+              {images.length > 1 && thumbsMounted ? (
                 <div
                   className={`order-first col-span-2 flex min-w-0 justify-center transition-opacity duration-300 sm:order-none sm:col-span-1 sm:max-w-[11rem] md:max-w-[17rem] lg:max-w-[32rem] xl:max-w-[46rem] 2xl:max-w-[56rem] ${
                     showThumbnails ? "opacity-100" : "pointer-events-none opacity-0"
@@ -355,6 +370,8 @@ export function MaasHackCardViewer({
                         <img
                           src={image.src}
                           alt={`Photo ${index + 1}`}
+                          loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-cover"
                         />
                       </button>
@@ -378,7 +395,7 @@ export function MaasHackCardViewer({
                   <button
                     type="button"
                     onClick={toggleRotation}
-                    className="viewer-ctrl-btn flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/25 bg-black/50 text-white backdrop-blur-md transition-colors hover:border-transparent hover:bg-white hover:text-black sm:h-9 sm:w-9"
+                    className="viewer-ctrl-btn flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/25 bg-black/50 text-white transition-colors hover:border-transparent hover:bg-white hover:text-black sm:h-9 sm:w-9"
                     aria-label="Rotate screen orientation"
                     title={isLandscape ? "Rotate to Portrait" : "Rotate to Landscape"}
                   >
@@ -393,7 +410,7 @@ export function MaasHackCardViewer({
                 <button
                   type="button"
                   onClick={toggleFullscreen}
-                  className="viewer-ctrl-btn flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/25 bg-black/50 text-white backdrop-blur-md transition-colors hover:border-transparent hover:bg-white hover:text-black sm:h-9 sm:w-9"
+                  className="viewer-ctrl-btn flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/25 bg-black/50 text-white transition-colors hover:border-transparent hover:bg-white hover:text-black sm:h-9 sm:w-9"
                   aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
                   title={isFullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
                 >
